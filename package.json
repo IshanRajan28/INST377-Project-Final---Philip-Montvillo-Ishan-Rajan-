@@ -1,0 +1,29 @@
+{
+  "name": "inst377-project-final---philip-montvillo-ishan-rajan-",
+  "version": "1.0.0",
+  "description": "INST377 Final Project",
+  "homepage": "https://github.com/IshanRajan28/INST377-Project-Final---Philip-Montvillo-Ishan-Rajan-#readme",
+  "bugs": {
+    "url": "https://github.com/IshanRajan28/INST377-Project-Final---Philip-Montvillo-Ishan-Rajan-/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IshanRajan28/INST377-Project-Final---Philip-Montvillo-Ishan-Rajan-.git"
+  },
+  "license": "ISC",
+  "author": "Ishan Rajan and Philip Montvillo",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon -e '*'",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.104.1",
+    "body-parser": "^2.2.2",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "nodemon": "^3.1.14",
+    "usa-state-validator": "^1.0.6"
+  }
+}
