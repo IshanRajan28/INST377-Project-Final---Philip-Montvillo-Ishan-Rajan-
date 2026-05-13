@@ -1,74 +1,81 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const supabaseClient = require("@supabase/supabase-js");
-const { isValidStateAbbreviation } = require("usa-state-validator");
-const dotnev = require("dotenv");
+const dotenv = require("dotenv");
 
 const app = express();
 const port = 3000;
-dotnev.config();
+app.listen(port);
 
-app.use(bodyParser.json());
-app.use(express.static(__dirname + "/public"));
+dotenv.config({ path: "../.env" });
+
+app.use(express.static("frontend/build"));
+app.use(express.json());
 
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
+const NVD_API_KEY = process.env.NVD_API_KEY;
+
 const supabase = supabaseClient.createClient(supabaseUrl, supabaseKey);
 
-app.get("/", (req, res) => {
-  res.sendFile("public/Customers.html", { root: __dirname });
-});
-
-app.get("/customers", async (req, res) => {
-  console.log("Attempting to get all customers!");
-
-  const { data, error } = await supabase.from("customer").select();
-
-  if (error) {
-    console.log(`Error: ${error}`);
-    res.statusCode = 500;
-    res.send(error);
-  } else {
-    console.log("Recieved Data:", data.length);
+// ENDPOINT 1: To get the watchlist of the user from the database
+// Call this endpoint to get the user's watchlist of all of the technologies they are using.
+app.get("/api/watchlist", async (req, res) => {
+  try {
+    const { data, error } = await supabase.from("watchlist").select("*");
+    if (error) {
+      console.log(error);
+      return res.status(400).json({ error: error.message });
+    }
     res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: "Server Failed" });
   }
 });
 
-app.post("/customer", async (req, res) => {
-  console.log("Adding Customer");
-  console.log(`Request: ${JSON.stringify(req.body)}`);
-
-  const firstName = req.body.firstName;
-  const lastName = req.body.lastName;
-  const state = req.body.state;
-
-  if (!isValidStateAbbreviation(state)) {
-    console.log(`State: ${state} is invalid`);
-    res.statusCode = 400;
-    res.json({
-      message: `${state} is not a valid 2 letter Abbreviation for State`,
-    });
-    return;
-  }
-
-  const { data, error } = await supabase
-    .from("customer")
-    .insert({
-      customer_first_name: firstName,
-      customer_last_name: lastName,
-      customer_state: state,
-    })
-    .select();
-
-  if (error) {
-    console.log(`Error: ${error}`);
-    res.statusCode = 500;
-    res.send(error);
-  } else {
-    res.json(data);
+// ENDPOINT 2: Update the watchlist on the database
+// Call this endpoint to update the user's watchlist on supabase and the frontend.
+app.post("/api/watchlist", async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from("watchlist")
+      .insert({
+        tech_name: req.body.tech_name,
+        user_id: req.body.user_id,
+      })
+      .select("*");
+    // .insert.select only show the new row and hence made it easier for you Phillp
+    if (error) {
+      console.log(error);
+      return res.status(400).json({ error: error.message });
+    }
+    res.json(data[0]);
+  } catch (error) {
+    console.log("Error:", error);
+    res.status(500).json({ message: "Server Failed" });
   }
 });
 
-app.listen(port, () => {
-  console.log(`App is available on port: ${port}`);
+// ENDPOINT 3: GET Data from the NVD api
+// Borrows the logic from ENDPOINT 1 and 2
+
+app.get("/api/vulnerabilities", async (req, res) => {
+  try {
+    const { data, error } = await supabase.from("watchlist").select("*");
+    if (error) {
+      console.log(error);
+      return res.status(400).json({ error: error.message });
+    }
+
+    let user_watch_list = [];
+
+    for (const row of data) {
+      const data = await fetch(
+        `https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=${row}`
+      );
+      const information = await data.json();
+      user_watch_list.push(information);
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Server Failed" });
+  }
 });
