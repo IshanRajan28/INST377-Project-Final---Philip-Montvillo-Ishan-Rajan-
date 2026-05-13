@@ -4,11 +4,10 @@ const dotenv = require("dotenv");
 
 const app = express();
 const port = 3000;
-app.listen(port);
 
-dotenv.config({ path: "../.env" });
+dotenv.config({ path: "./.env" });
 
-app.use(express.static("frontend/build"));
+app.use(express.static("public"));
 app.use(express.json());
 
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -57,7 +56,6 @@ app.post("/api/watchlist", async (req, res) => {
 
 // ENDPOINT 3: GET Data from the NVD api
 // Borrows the logic from ENDPOINT 1 and 2
-
 app.get("/api/vulnerabilities", async (req, res) => {
   try {
     const { data, error } = await supabase.from("watchlist").select("*");
@@ -69,13 +67,19 @@ app.get("/api/vulnerabilities", async (req, res) => {
     let user_watch_list = [];
 
     for (const row of data) {
-      const data = await fetch(
-        `https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=${row}`
+      const convertedName = encodeURIComponent(row.tech_name);
+      const NVD_Data = await fetch(
+        `https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=${convertedName}`
       );
-      const information = await data.json();
+      const information = await NVD_Data.json();
       user_watch_list.push(information);
     }
+    res.json(user_watch_list);
   } catch (error) {
     res.status(500).json({ message: "Server Failed" });
   }
+});
+
+app.listen(port, () => {
+  console.log(`App is available on port: ${port}`);
 });
