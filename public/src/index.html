@@ -4,12 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Vulnerability Watchlist</title>
-    <link rel="stylesheet" href="./src/App.css">
+    <!-- CHANGED: this file lives in public/src already, so the stylesheet sits next to it. -->
+    <link rel="stylesheet" href="./App.css">
 </head>
 
 <body>
     <div id="root"></div>
-    <script type="module" src="./src/App.js"></script>
+    <!-- CHANGED: same as above; App.js is a sibling, not under another src/ folder. -->
+    <script type="module" src="./App.js"></script>
 </body>
 
 </html>

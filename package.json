@@ -18,6 +18,8 @@
     "start": "nodemon -e '*'",
     "dev": "vite",
     "server": "nodemon index.js",
+    "build": "vite build",
+    "vercel-build": "vite build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
@@ -31,7 +33,7 @@
     "usa-state-validator": "^1.0.6"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^6.0.1",
-    "vite": "^8.0.12"
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^5.4.11"
   }
 }
