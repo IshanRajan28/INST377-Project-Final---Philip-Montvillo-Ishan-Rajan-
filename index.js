@@ -16,6 +16,10 @@ const NVD_API_KEY = process.env.NVD_API_KEY;
 
 const supabase = supabaseClient.createClient(supabaseUrl, supabaseKey);
 
+app.get('/', (req, res) => {
+  res.sendFile('public/index.html', { root: __dirname });
+});
+
 // ENDPOINT 1: To get the watchlist of the user from the database
 // Call this endpoint to get the user's watchlist of all of the technologies they are using.
 app.get("/api/watchlist", async (req, res) => {
