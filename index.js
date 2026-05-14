@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const supabaseClient = require("@supabase/supabase-js");
 const dotenv = require("dotenv");
+const { count } = require("console");
 
 const app = express();
 const port = 3000;
@@ -24,8 +25,12 @@ app.get("/", (req, res) => {
 // ENDPOINT 1: To get the watchlist of the user from the database
 // Call this endpoint to get the user's watchlist of all of the technologies they are using.
 app.get("/api/watchlist", async (req, res) => {
+  const userId = req.query.userId;
   try {
-    const { data, error } = await supabase.from("watchlist").select("*");
+    const { data, error } = await supabase
+      .from("watchlist")
+      .select("*")
+      .eq("user_id", userId);
     if (error) {
       console.log(error);
       return res.status(400).json({ error: error.message });
@@ -40,6 +45,22 @@ app.get("/api/watchlist", async (req, res) => {
 // Call this endpoint to update the user's watchlist on supabase and the frontend.
 app.post("/api/watchlist", async (req, res) => {
   try {
+    const { count, error } = await supabase
+      .from("watchlist")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", req.body.user_id);
+
+    if (error) {
+      console.log(error);
+      return res.status(400).json({ error: error.message });
+    }
+
+    if (count >= 5) {
+      return res
+        .status(400)
+        .json({ error: "Limit reached! You can only track 5 technologies" });
+    }
+
     const { data, error } = await supabase
       .from("watchlist")
       .insert({
@@ -48,6 +69,7 @@ app.post("/api/watchlist", async (req, res) => {
       })
       .select("*");
     // .insert.select only show the new row and hence made it easier for you Phillp
+
     if (error) {
       console.log(error);
       return res.status(400).json({ error: error.message });
@@ -62,8 +84,12 @@ app.post("/api/watchlist", async (req, res) => {
 // ENDPOINT 3: GET Data from the NVD api
 // Borrows the logic from ENDPOINT 1 and 2
 app.get("/api/vulnerabilities", async (req, res) => {
+  const userId = req.query.userId;
   try {
-    const { data, error } = await supabase.from("watchlist").select("*");
+    const { data, error } = await supabase
+      .from("watchlist")
+      .select("*")
+      .eq("user_id", userId);
     if (error) {
       console.log(error);
       return res.status(400).json({ error: error.message });
@@ -82,7 +108,11 @@ app.get("/api/vulnerabilities", async (req, res) => {
         }
       );
       const information = await NVD_Data.json();
-      user_watch_list.push(information);
+      
+      user_watch_list.push({
+        tech: row.tech_name,
+        details: information,
+      });
     }
     res.json(user_watch_list);
   } catch (error) {
@@ -91,7 +121,6 @@ app.get("/api/vulnerabilities", async (req, res) => {
 });
 
 // ENDPOINT 4: Removes a tech from the database
-
 
 app.listen(port, () => {
   console.log(`App is available on port: ${port}`);
