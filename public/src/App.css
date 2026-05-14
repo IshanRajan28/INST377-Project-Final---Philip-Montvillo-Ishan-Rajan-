@@ -41,14 +41,13 @@ input {
 }
 
 .login-button {
-  color: white;
-  border: 2px solid #222;
+  background: #bdc3c7;
+  border: 1px solid #333;
   width: 100%;
-  padding: 20px;
-  font-size: 20px;
-  font-weight: bold;
+  padding: 12px;
+  margin-top: 15px;
   cursor: pointer;
-  margin-top: 10px;
+  font-size: 14px;
 }
 
 .login-button:hover {
