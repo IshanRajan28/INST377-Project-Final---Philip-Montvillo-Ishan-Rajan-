@@ -49,6 +49,14 @@ function LoginPage() {
   };
   return (
     <>
+      <div
+        style={{
+          padding: "50px",
+          border: "5px solid red",
+          backgroundColor: "white",
+          color: "black",
+        }}
+      ></div>
       <div className="login-container">
         <h1>Vulnerability Tracker Login Page</h1>
         <form onSubmit={handleLogin}>
