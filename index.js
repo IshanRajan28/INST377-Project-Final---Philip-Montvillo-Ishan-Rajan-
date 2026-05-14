@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const supabaseClient = require("@supabase/supabase-js");
 const dotenv = require("dotenv");
-const { count } = require("console");
+const { count } = require("console"); //I think we need to remove this line, we already get count from the supabase query, we don't need to import it from console I THINK?
 
 const app = express();
 const port = 3000;
@@ -49,7 +49,7 @@ app.post("/api/watchlist", async (req, res) => {
       .from("watchlist")
       .select("*", { count: "exact", head: true })
       .eq("user_id", req.body.user_id);
-
+      //npm run server is no longer working and I think it's because we have created a variable error HERE while also making one on line 64, thus giving me an error. 
     if (error) {
       console.log(error);
       return res.status(400).json({ error: error.message });
@@ -60,8 +60,8 @@ app.post("/api/watchlist", async (req, res) => {
         .status(400)
         .json({ error: "Limit reached! You can only track 5 technologies" });
     }
-
-    const { data, error } = await supabase
+    //Modified this variable to count to avoid confusion with the error variable on line 64. I think this is the source of the error that was breaking npm run server.
+    const { data: insertData, error:insertError } = await supabase
       .from("watchlist")
       .insert({
         tech_name: req.body.tech_name,
@@ -70,11 +70,11 @@ app.post("/api/watchlist", async (req, res) => {
       .select("*");
     // .insert.select only show the new row and hence made it easier for you Phillp
 
-    if (error) {
-      console.log(error);
-      return res.status(400).json({ error: error.message });
+    if (insertError) {
+      console.log(insertError);
+      return res.status(400).json({ error: insertError.message });
     }
-    res.json(data[0]);
+    res.json(insertData[0]);
   } catch (error) {
     console.log("Error:", error);
     res.status(500).json({ message: "Server Failed" });
