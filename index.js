@@ -2,7 +2,6 @@ const express = require("express");
 const path = require("path");
 const supabaseClient = require("@supabase/supabase-js");
 const dotenv = require("dotenv");
-const { count } = require("console"); //I think we need to remove this line, we already get count from the supabase query, we don't need to import it from console I THINK?
 
 const app = express();
 const port = 3000;
@@ -45,13 +44,15 @@ app.get("/api/watchlist", async (req, res) => {
 // Call this endpoint to update the user's watchlist on supabase and the frontend.
 app.post("/api/watchlist", async (req, res) => {
   try {
+    const userId = req.body.user_id;
     const cleanTechName = req.body.tech_name.trim().toLowerCase();
+
     // Checks if the count of a user's watchlist is greater than 5
     const { count, error } = await supabase
       .from("watchlist")
       .select("*", { count: "exact", head: true })
-      .eq("user_id", req.body.user_id);
-      //npm run server is no longer working and I think it's because we have created a variable error HERE while also making one on line 64, thus giving me an error. 
+      .eq("user_id", userId);
+    //npm run server is no longer working and I think it's because we have created a variable error HERE while also making one on line 64, thus giving me an error.
     if (error) {
       console.log(error);
       return res.status(400).json({ error: error.message });
@@ -63,11 +64,26 @@ app.post("/api/watchlist", async (req, res) => {
         .json({ error: "Limit reached! You can only track 5 technologies" });
     }
 
-    const { data, error } = await supabase
+    // Checks for duplicates
+    const { data: existing } = await supabase
+      .from("watchlist")
+      .select("*")
+      .eq("user_id", userId)
+      .eq("tech_name", cleanTechName)
+      .maybeSingle();
+
+    if (existing) {
+      return res
+        .status(400)
+        .json({ error: "You are already tracking this technology!" });
+    }
+
+    // Part that does the updating
+    const { data: insertData, error: insertError } = await supabase
       .from("watchlist")
       .insert({
         tech_name: cleanTechName,
-        user_id: req.body.user_id,
+        user_id: userId,
       })
       .select("*");
     // .insert.select only show the new row and hence made it easier for you Phillp
