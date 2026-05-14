@@ -80,7 +80,7 @@ function LoginPage() {
             Sign Up
           </button>
           <p className="message-text">
-            Check your email for a confirmation link!
+            Check your email for a confirmation link when you click Sign Up!
           </p>
         </form>
       </div>
