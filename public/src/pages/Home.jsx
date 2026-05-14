@@ -59,6 +59,7 @@ function LoginPage() {
 
           <br></br>
 
+          <label>Password</label>
           <input
             type="password"
             value={password}
