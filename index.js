@@ -90,6 +90,9 @@ app.get("/api/vulnerabilities", async (req, res) => {
   }
 });
 
+// ENDPOINT 4: Removes a tech from the database
+
+
 app.listen(port, () => {
   console.log(`App is available on port: ${port}`);
 });
