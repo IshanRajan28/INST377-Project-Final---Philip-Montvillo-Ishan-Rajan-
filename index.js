@@ -45,6 +45,8 @@ app.get("/api/watchlist", async (req, res) => {
 // Call this endpoint to update the user's watchlist on supabase and the frontend.
 app.post("/api/watchlist", async (req, res) => {
   try {
+    const cleanTechName = req.body.tech_name.trim().toLowerCase();
+    // Checks if the count of a user's watchlist is greater than 5
     const { count, error } = await supabase
       .from("watchlist")
       .select("*", { count: "exact", head: true })
@@ -61,10 +63,25 @@ app.post("/api/watchlist", async (req, res) => {
         .json({ error: "Limit reached! You can only track 5 technologies" });
     }
 
+    // Checks if the user puts two of the same technologies (like React twice)
+    const { data: existingEntry } = await supabase
+      .from("watchlist")
+      .select("*")
+      .eq("user_id", req.body.user_id)
+      .eq("tech_name", cleanTechName)
+      .maybeSingle();
+
+    if (existingEntry) {
+      return res
+        .status(400)
+        .json({ error: "You are already tracking this technology" });
+    }
+
+    // Where it gets updated in the database and dashboard
     const { data, error } = await supabase
       .from("watchlist")
       .insert({
-        tech_name: req.body.tech_name,
+        tech_name: cleanTechName,
         user_id: req.body.user_id,
       })
       .select("*");
@@ -108,7 +125,7 @@ app.get("/api/vulnerabilities", async (req, res) => {
         }
       );
       const information = await NVD_Data.json();
-      
+
       user_watch_list.push({
         tech: row.tech_name,
         details: information,
@@ -121,6 +138,25 @@ app.get("/api/vulnerabilities", async (req, res) => {
 });
 
 // ENDPOINT 4: Removes a tech from the database
+app.delete("/api/watchlist", async (req, res) => {
+  const userId = req.query.userId;
+  const cleanTechName = req.query.tech_name.trim().toLowerCase();
+
+  if (!userId) {
+    return res.status(400).json({ error: "User ID is required" });
+  }
+  try {
+    const { data, error } = await supabase
+      .from("watchlist")
+      .delete()
+      .eq("user_id", userId)
+      .eq("tech_name", cleanTechName);
+
+    return res.status(200).json({ message: "Sucessfully deleted", data });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 app.listen(port, () => {
   console.log(`App is available on port: ${port}`);
