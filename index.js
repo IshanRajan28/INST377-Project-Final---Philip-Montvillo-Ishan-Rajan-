@@ -18,7 +18,7 @@ const NVD_API_KEY = process.env.NVD_API_KEY;
 const supabase = supabaseClient.createClient(supabaseUrl, supabaseKey);
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(__dirname, "public", "src", "index.html"));
 });
 
 // ENDPOINT 1: To get the watchlist of the user from the database
