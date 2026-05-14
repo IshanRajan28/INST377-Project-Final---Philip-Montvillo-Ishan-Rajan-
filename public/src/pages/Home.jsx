@@ -77,7 +77,7 @@ function LoginPage() {
             onClick={handleSignUp}
             className="signup-button"
           >
-            SignUp
+            Sign Up
           </button>
         </form>
       </div>
