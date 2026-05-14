@@ -1,6 +1,6 @@
 // Used the supabase react docs to help write my code for this
 
-import "./App.css";
+import "../App.css";
 import { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 
