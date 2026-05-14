@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 console.log("DEBUG - URL:", import.meta.env.VITE_SUPABASE_URL);
-console.log("DEBUG - KEY:", import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY);
+console.log("DEBUG - KEY:", import.meta.env.VITE_SUPABASE_KEY);
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
