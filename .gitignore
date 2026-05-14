@@ -1,2 +1,7 @@
 .env
+.env.local
+*.env
+public/src/.env
+public/src/.env.local
 node_modules
+dist
