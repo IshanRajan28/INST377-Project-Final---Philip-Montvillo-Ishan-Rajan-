@@ -113,3 +113,105 @@ input:focus {
   font-weight: 600;
   line-height: 1.45;
 }
+
+.mainNav {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  display: flex;
+  gap: 10px;
+  z-index: 10;
+}
+
+.mainNav button {
+  background: #1f2a38;
+  color: white;
+  border: 1px solid #8fa1ac;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+  font-weight: 700;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.mainNav button:hover {
+  background: #2980b9;
+  transform: translateY(-1px);
+}
+
+
+/* The styles below are for the CVE cards that'll eventually be put up on the dashboard page. They're not being used yet, but I tested them by making a fake one in the app.jsx and it looked pretty good :) */
+.cveCard {
+  background: #f8fafc;
+  border: 2px solid #c0392b;
+  border-radius: 14px;
+  padding: 18px;
+  margin: 30px auto 16px;
+  max-width: 700px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+}
+
+.cveCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.cveCard h3 {
+  margin: 0;
+  color: #1f2a38;
+}
+
+.cveCard p {
+  color: #34495e;
+  line-height: 1.5;
+}
+
+.severityBadge {
+  border-radius: 999px;
+  padding: 6px 10px;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.cveCard.critical {
+  border-color: #c0392b;
+}
+
+.cveCard.high {
+  border-color: #e67e22;
+}
+
+.cveCard.medium {
+  border-color: #f1c40f;
+}
+
+.cveCard.low {
+  border-color: #27ae60;
+}
+
+.severityBadge.critical {
+  background: #c0392b;
+}
+
+.severityBadge.high {
+  background: #e67e22;
+}
+
+.severityBadge.medium {
+  background: #f1c40f;
+  color: #1f2a38;
+}
+
+.severityBadge.low {
+  background: #27ae60;
+}
+
+.severityBadge.unknown {
+  background: #7f8c8d;
+}
