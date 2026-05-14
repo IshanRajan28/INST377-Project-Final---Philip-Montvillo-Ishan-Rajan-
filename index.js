@@ -11,8 +11,8 @@ dotenv.config({ path: "./.env" });
 app.use(express.static("public"));
 app.use(express.json());
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_KEY;
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseKey = process.env.VITE_SUPABASE_KEY;
 const NVD_API_KEY = process.env.NVD_API_KEY;
 
 const supabase = supabaseClient.createClient(supabaseUrl, supabaseKey);
