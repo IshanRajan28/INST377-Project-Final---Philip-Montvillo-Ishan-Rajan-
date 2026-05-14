@@ -1,5 +1,6 @@
 // Used the supabase react docs to help write my code for this
 
+import "./App.css";
 import { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 
@@ -67,10 +68,15 @@ function LoginPage() {
           ></input>
           <br></br>
 
-          <button type="submit" disabled={loading}>
+          <button type="submit" disabled={loading} className="login-button">
             Login
           </button>
-          <button type="button" disabled={loading} onClick={handleSignUp}>
+          <button
+            type="button"
+            disabled={loading}
+            onClick={handleSignUp}
+            className="signup-button"
+          >
             SignUp
           </button>
         </form>
