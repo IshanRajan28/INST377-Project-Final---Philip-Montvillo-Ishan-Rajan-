@@ -79,6 +79,9 @@ function LoginPage() {
           >
             Sign Up
           </button>
+          <p className="message-text">
+            Check your email for a confirmation link!
+          </p>
         </form>
       </div>
     </>
