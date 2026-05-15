@@ -5,13 +5,18 @@ function About() {
       <section className="aboutCard">
         <h1>About This Project</h1>
 
+
+      <div className="aboutSection">
         <p>
           This vulnerability tracking app helps users monitor security threats that are 
           connected to the technologies they actually care about. Instead of having to manually 
           search through large vulnerability databases, users can build a watchlist and view 
           any relevant CVE information in one place!
         </p>
+      </div>
 
+
+      <div className="aboutSection">
         <h2>The Problem</h2>
 
         <p>
@@ -20,7 +25,9 @@ function About() {
             information overload for respective developers and DevOps teams and make it difficult
             to find threats that actually apply to stacks/technologies that they use. 
         </p>
+      </div>
 
+      <div className ="aboutSection">
         <h2>Our Solution</h2>
 
         <p>
@@ -29,14 +36,19 @@ function About() {
             Vulnerability Database (NVD). This allows the dashboard to show a curated list of CVEs that
             are relevant to the user and their selected technologies. 
         </p>
+      </div>
 
+      <div className="aboutSection">
         <h2>Technologies Used</h2>
+        
         <ul>
             <li>React helped us build the frontend interface.</li>
             <li>Node.js and Express are used to create backend API routes.</li>
             <li>Supabase is used to store user watchlist data.</li>
             <li>The NVD Database API is used to retrieve CVE information.</li>
         </ul>
+      </div>
+
       </section>
     </main>
   );
