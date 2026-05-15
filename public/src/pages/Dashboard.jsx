@@ -24,8 +24,15 @@ function Dashboard({ currentUserId }) {
         <h1>Watchlist</h1>
         <Watchlist currentUserId={currentUserId} />
       </section>
+      
+      {/* Cool, now let's add the right side of the dashboard that'll display active threats */}
+      <section className="dashboardThreats">
+          <h1>Active Threats</h1>
+          <p>Select a technology to view its respective cards.</p>
+      </section>
     </main>
   );
 }
+
 
 export default Dashboard;
