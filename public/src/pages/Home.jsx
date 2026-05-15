@@ -4,6 +4,7 @@ import "../App.css";
 import { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import About from "./About";
+import Dashboard from "./Dashboard";
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -12,6 +13,7 @@ const supabase = createClient(
 
 function LoginPage() {
   const [showAbout, setShowAbout] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,8 +28,9 @@ function LoginPage() {
     if (error) {
       alert(error.message);
     }
-    if (data) {
+    if (data.user) {
       console.log("Logged In!", data.user);
+      setCurrentUser(data.user)
     }
     setLoading(false);
   };
@@ -48,6 +51,9 @@ function LoginPage() {
     }
     setLoading(false);
   };
+    if (currentUser){
+      return <Dashboard currentUserId={currentUser.id} />
+    }
 
     if (showAbout) {
       return <About goBackToLogin={() => setShowAbout(false)} />;
