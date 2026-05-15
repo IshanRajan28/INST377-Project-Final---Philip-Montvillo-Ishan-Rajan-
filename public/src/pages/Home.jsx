@@ -3,6 +3,7 @@
 import "../App.css";
 import { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
+import About from "./About";
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -10,6 +11,7 @@ const supabase = createClient(
 );
 
 function LoginPage() {
+  const [showAbout, setShowAbout] = useState(false);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,8 +48,14 @@ function LoginPage() {
     }
     setLoading(false);
   };
+
+    if (showAbout) {
+      return <About goBackToLogin={() => setShowAbout(false)} />;
+    }
+
   return (
     <>
+      <div className ="loginPageLayout">
       <div className="login-container">
         <h1>Vulnerability Tracker Login Page</h1>
         <form onSubmit={handleLogin}>
@@ -84,6 +92,17 @@ function LoginPage() {
             Check your email for a confirmation link when you click Sign Up!
           </p>
         </form>
+      </div>
+
+        <div className ="aboutSideButtonContainer">
+          <button
+            type="button"
+            className="aboutButton"
+            onClick={() => setShowAbout(true)}
+            >
+            About This Project
+          </button>
+        </div>
       </div>
     </>
   );

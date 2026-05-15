@@ -1,5 +1,5 @@
 // This'll be that static about page where we explain the purposes of the vulnerability tracking app. 
-function About() {
+function About({ goBackToLogin }) {
   return (
     <main className="aboutPage">
       <section className="aboutCard">
@@ -40,7 +40,7 @@ function About() {
 
       <div className="aboutSection">
         <h2>Technologies Used</h2>
-        
+
         <ul>
             <li>React helped us build the frontend interface.</li>
             <li>Node.js and Express are used to create backend API routes.</li>
@@ -49,6 +49,12 @@ function About() {
         </ul>
       </div>
 
+        <button 
+        type="button"
+        className="backToLoginButton" 
+        onClick={goBackToLogin}>
+          Back to Login Page
+        </button>
       </section>
     </main>
   );
