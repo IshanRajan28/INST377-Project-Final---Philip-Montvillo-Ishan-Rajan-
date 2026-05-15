@@ -1,5 +1,3 @@
-// Will work on this Ishan Rajan
-
 import { useState, useEffect } from "react";
 
 function Watchlist({ currentUserId }) {
@@ -26,13 +24,35 @@ function Watchlist({ currentUserId }) {
       }),
     });
     const result = await response.json();
-
     if (!response.ok) {
       setError(result.error);
     } else {
       setWatchlist([...watchlist, result]);
       setNewTech("");
       setError("");
+    }
+  };
+
+  const deleteTech = async (techName) => {
+    try {
+      const response = await fetch(
+        `/api/watchlist?userId=${currentUserId}&tech_name=${techName
+          .trim()
+          .toLowerCase()}`,
+        { method: "DELETE" }
+      );
+      if (response.ok) {
+        setWatchlist(
+          watchlist.filter(
+            (item) => item.tech_name !== techName.trim().toLowerCase()
+          )
+        );
+      } else {
+        const result = await response.json();
+        setError(result.error);
+      }
+    } catch (error) {
+      setError("Server error while deleting");
     }
   };
 
@@ -51,7 +71,10 @@ function Watchlist({ currentUserId }) {
 
       <ul>
         {watchlist.map((item) => (
-          <li key={item.id}>{item.tech_name}</li>
+          <li key={item.id}>
+            {item.tech_name}{" "}
+            <button onClick={() => deleteTech(item.tech_name)}></button>
+          </li>
         ))}
       </ul>
     </div>

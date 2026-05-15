@@ -46,7 +46,7 @@ function LoginPage() {
       alert(error.message);
     }
 
-    if (data) {
+    if (data.user) {
       alert("Check your email for a confirmation link!");
     }
     setLoading(false);
