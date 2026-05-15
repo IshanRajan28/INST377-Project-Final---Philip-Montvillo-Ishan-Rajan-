@@ -24,12 +24,12 @@ h1 {
   padding: 24px 20px;
   font-size: 1.35rem;
   text-align: center;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.2px;
   font-weight: 700;
 }
 
 form {
-  padding: 32px;
+  padding: 24px;
 }
 
 label {
@@ -114,9 +114,6 @@ input:focus {
   line-height: 1.45;
 }
 
-
-
-
 /* The styles below are for the CVE cards that'll eventually be put up on the dashboard page. They're not being used yet, but I tested them by making a fake one in the app.jsx and it looked pretty good :) */
 .cveCard {
   background: #f8fafc;
@@ -195,10 +192,8 @@ input:focus {
 /*Alright, these are the CSS stylings for the login and about pages.*/
 .loginPageLayout {
   display: flex;
-  flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 60px;
 }
 
 .aboutSideButtonContainer {
@@ -210,10 +205,13 @@ input:focus {
   background: #27ae60;
   color: white;
   border: 1px solid #1e8449;
-  padding: 10px 16px;
+  width: 100%;
+  padding: 13px;
+  margin-top: 12px;
   border-radius: 8px;
   cursor: pointer;
   font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+  font-size: 15px;
   font-weight: 750;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
   transition: background-color 0.2s ease, transform 0.2s ease,
@@ -300,4 +298,115 @@ input:focus {
   background: #2980b9;
   transform: translateY(-2px);
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+}
+
+/* Dashboard styling */
+
+.dashboardLayout {
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  gap: 28px;
+  padding: 36px;
+  box-sizing: border-box;
+  background: #202020;
+  font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+}
+
+/* Left watchlist panel */
+.dashboardWatchlist {
+  width: 290px;
+  background: #d9d9d9;
+  border-radius: 18px;
+  padding: 22px;
+  box-sizing: border-box;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.35);
+}
+
+.dashboardWatchlist h1 {
+  background: transparent;
+  color: #1f1f1f;
+  padding: 0;
+  margin: 0 0 20px;
+  text-align: left;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+/* This is the styling for the right active threats panel */
+.dashboardThreats {
+  flex: 1;
+  background: #d9d9d9;
+  border-radius: 18px;
+  padding: 28px;
+  box-sizing: border-box;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.35);
+}
+
+.dashboardThreats h1 {
+  background: transparent;
+  color: #1f1f1f;
+  padding: 0;
+  margin: 0 0 24px;
+  text-align: left;
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+}
+
+.dashboardThreats p {
+  color: #333;
+  font-weight: 650;
+  font-size: 1rem;
+}
+
+.dashboardWatchlist input {
+  width: 100%;
+  padding: 11px;
+  border: 1px solid #9a9a9a;
+  border-radius: 8px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+}
+
+.dashboardWatchlist button {
+  background: #1f1f1f;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 750;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.dashboardWatchlist button:hover {
+  background: #3a3a3a;
+  transform: translateY(-1px);
+}
+
+.dashboardWatchlist ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 18px;
+}
+
+.dashboardWatchlist li {
+  background: #f4f4f4;
+  border: 1px solid #b8b8b8;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  font-weight: 700;
+  color: #1f1f1f;
+}
+
+/* This is the CVE Card Placeholder */
+.cveCard {
+  background: #eeeeee;
+  border: 2px solid #1f1f1f;
+  border-radius: 14px;
+  padding: 18px;
+  margin: 18px 0;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
 }

@@ -94,13 +94,7 @@ function LoginPage() {
           >
             Sign Up
           </button>
-          <p className="message-text">
-            Check your email for a confirmation link when you click Sign Up!
-          </p>
-        </form>
-      </div>
 
-        <div className ="aboutSideButtonContainer">
           <button
             type="button"
             className="aboutButton"
@@ -108,6 +102,14 @@ function LoginPage() {
             >
             About This Project
           </button>
+          
+          <p className="message-text">
+            Check your email for a confirmation link when you click Sign Up!
+          </p>
+        </form>
+      </div>
+
+        <div className ="aboutSideButtonContainer">
         </div>
       </div>
     </>
