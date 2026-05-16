@@ -93,8 +93,12 @@ app.post("/api/watchlist", async (req, res) => {
 
     try {
       const nvdResponse = await fetch(
-        `https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=${convertedName}&resultsPerPage=15`,
-        { headers: { apiKey: NVD_API_KEY } }
+        `https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=${cleanTechName}`,
+        {
+          headers: {
+            apiKey: NVD_API_KEY,
+          },
+        }
       );
 
       const nvdData = await nvdResponse.json();
@@ -141,32 +145,42 @@ app.get("/api/vulnerabilities", async (req, res) => {
       .from("watchlist")
       .select("*")
       .eq("user_id", userId);
+
     if (error) {
       console.log(error);
       return res.status(400).json({ error: error.message });
     }
 
-    let user_watch_list = [];
+    const fetchPromises = data.map(async (row) => {
+      try {
+        const convertedName = encodeURIComponent(row.tech_name);
+        const NVD_Data = await fetch(
+          `https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=${convertedName}&resultsPerPage=10`,
+          { headers: { apiKey: NVD_API_KEY } }
+        );
+        const information = await NVD_Data.json();
 
-    for (const row of data) {
-      const convertedName = encodeURIComponent(row.tech_name);
-      const NVD_Data = await fetch(
-        `https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=${convertedName}&resultsPerPage=15`,
-        { headers: { apiKey: NVD_API_KEY } }
-      );
-      const information = await NVD_Data.json();
+        return {
+          tech: row.tech_name,
+          details: information,
+        };
+      } catch (err) {
+        console.log(`Failed fetching NVD data for ${row.tech_name}:`, err);
+        return {
+          tech: row.tech_name,
+          details: { vulnerabilities: [] },
+        };
+      }
+    });
 
-      user_watch_list.push({
-        tech: row.tech_name,
-        details: information,
-      });
-    }
+    const user_watch_list = await Promise.all(fetchPromises);
+
     res.json(user_watch_list);
   } catch (error) {
+    console.log("Vulnerabilities Endpoint Error:", error);
     res.status(500).json({ message: "Server Failed" });
   }
 });
-
 // ENDPOINT 4: Removes a tech from the database
 app.delete("/api/watchlist", async (req, res) => {
   const userId = req.query.userId;
