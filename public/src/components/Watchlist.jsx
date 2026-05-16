@@ -84,7 +84,9 @@ function Watchlist({ currentUserId, watchlist, setWatchlist }) {
         {watchlist.map((item) => (
           <li key={item.id}>
             {item.tech_name}{" "}
-            <button onClick={() => deleteTech(item.tech_name)}>Delete</button>
+            <button onClick={() => deleteTech(item.tech || item.tech_name)}>
+              Delete
+            </button>
           </li>
         ))}
       </ul>

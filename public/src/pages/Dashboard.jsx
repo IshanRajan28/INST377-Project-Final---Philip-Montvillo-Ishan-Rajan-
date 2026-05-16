@@ -48,7 +48,8 @@ function Dashboard({ currentUserId }) {
       if (response.ok) {
         setWatchlist(
           watchlist.filter(
-            (item) => item.tech_name !== techName.trim().toLowerCase()
+            (item) =>
+              (item.tech || item.tech_name) !== techName.trim().toLowerCase()
           )
         );
       }

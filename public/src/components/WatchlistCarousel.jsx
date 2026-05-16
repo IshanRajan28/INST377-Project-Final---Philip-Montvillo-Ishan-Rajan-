@@ -10,27 +10,28 @@ function WatchlistCarousel({ watchlist, deleteTech }) {
 
   return (
     <div>
-      {/* Just in case the watchlist is null when loading it skips, so the
-      dashboard doesn't crash */}
-      {watchlist?.map((item) => (
-        <div key={item.id} className="techRow">
-          <div className="techRowHeader">
-            <h2>{item.tech_name}</h2>
-            <button onClick={() => deleteTech(item.tech_name)}>
-              Stop Tracking
-            </button>
+      {watchlist?.map((item, index) => {
+        const displayName = item?.tech || item?.tech_name;
+
+        return (
+          <div key={item.id || displayName || index} className="techRow">
+            <div className="techRowHeader">
+              <h2>{displayName}</h2>
+              <button onClick={() => deleteTech(displayName)}>
+                Stop Tracking
+              </button>
+            </div>
+
+            <Swiper spaceBetween={20} slidesPerView={3} grabCursor={true}>
+              {item?.details?.vulnerabilities?.map((bug, bugIndex) => (
+                <SwiperSlide key={bug.cve?.id || bugIndex}>
+                  <CveCard cve={bug.cve || bug} techName={displayName} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
           </div>
-          {/* Just in case the watchlist is null when loading it skips, so the
-      dashboard doesn't crash */}
-          <Swiper spaceBetween={20} slidesPerView={3} grabCursor={true}>
-            {item.vulnerabilities?.map((bug) => (
-              <SwiperSlide key={bug.id}>
-                <CveCard cve={bug} techName={item.tech_name} />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
