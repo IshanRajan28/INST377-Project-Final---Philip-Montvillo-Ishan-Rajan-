@@ -96,7 +96,13 @@ function Watchlist({
               >
                 {nameToDisplay}
               </span>{" "}
-              <button onClick={() => deleteTech(nameToDisplay)}>Delete</button>
+              <button 
+              type="button"
+              className="removeTechButton"
+              onClick={() => deleteTech(nameToDisplay)}
+              >
+                X
+              </button>
             </li>
           );
         })}

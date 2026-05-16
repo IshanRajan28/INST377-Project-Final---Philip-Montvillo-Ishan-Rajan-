@@ -312,6 +312,41 @@ input:focus {
   font-weight: 800;
 }
 
+.dashboardWatchlist li {
+  background: #f4f4f4;
+  border: 1px solid #b8b8b8;
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #1f1f1f;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.removeTechButton {
+  background: #1f1f1f;
+  color: white;
+  border: none;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 800;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+
 /* This is the styling for the right active threats panel */
 .dashboardThreats {
   flex: 1;
