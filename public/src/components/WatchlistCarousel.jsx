@@ -22,12 +22,16 @@ function WatchlistCarousel({ watchlist, deleteTech }) {
               </button>
             </div>
 
-            <Swiper spaceBetween={20} slidesPerView={3} grabCursor={true}>
-              {item?.details?.vulnerabilities?.map((bug, bugIndex) => (
-                <SwiperSlide key={bug.cve?.id || bugIndex}>
-                  <CveCard cve={bug.cve || bug} techName={displayName} />
-                </SwiperSlide>
-              ))}
+            <Swiper spaceBetween={0} slidesPerView={1} grabCursor={true}>
+              {item?.details?.vulnerabilities?.map((bug, bugIndex) => {
+                const cveData = bug.cve || bug;
+
+                return (
+                  <SwiperSlide key={cveData?.id || bugIndex}>
+                    <CveCard cve={cveData} techName={displayName} />
+                  </SwiperSlide>
+                );
+              })}
             </Swiper>
           </div>
         );
