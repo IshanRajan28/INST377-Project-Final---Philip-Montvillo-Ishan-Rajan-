@@ -25,7 +25,9 @@ function Dashboard({ currentUserId }) {
   useEffect(() => {
     const fetchList = async () => {
       try {
-        const response = await fetch(`/api/watchlist?userId=${currentUserId}`);
+        const response = await fetch(
+          `/api/vulnerabilities?userId=${currentUserId}`
+        );
         const data = await response.json();
         setWatchlist(data);
       } catch (error) {
