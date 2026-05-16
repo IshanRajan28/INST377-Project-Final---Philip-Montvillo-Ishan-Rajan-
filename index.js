@@ -93,12 +93,8 @@ app.post("/api/watchlist", async (req, res) => {
 
     try {
       const nvdResponse = await fetch(
-        `https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=${cleanTechName}`,
-        {
-          headers: {
-            apiKey: NVD_API_KEY,
-          },
-        }
+        `https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=${convertedName}&resultsPerPage=15`,
+        { headers: { apiKey: NVD_API_KEY } }
       );
 
       const nvdData = await nvdResponse.json();
