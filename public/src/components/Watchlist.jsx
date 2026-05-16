@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 
 function Watchlist({ currentUserId, watchlist, setWatchlist }) {
-  const [watchlist, setWatchlist] = useState([]);
   const [newTech, setNewTech] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
