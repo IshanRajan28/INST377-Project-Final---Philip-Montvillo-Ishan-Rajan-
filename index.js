@@ -78,6 +78,30 @@ app.post("/api/watchlist", async (req, res) => {
         .json({ error: "You are already tracking this technology!" });
     }
 
+    try {
+      const nvdResponse = await fetch(
+        `https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=${cleanTechName}`,
+        {
+          headers: {
+            apiKey: NVD_API_KEY,
+          },
+        }
+      );
+
+      const nvdData = await nvdResponse.json();
+
+      if (!nvdData.vulnerabilities || nvdData.vulnerabilities.length === 0) {
+        return res.status(400).json({
+          error: `"${req.body.tech_name}" is not a recognized technology with active entries in the NVD database.`,
+        });
+      }
+    } catch (nvdErr) {
+      console.log("NVD API Error:", nvdErr);
+      return res
+        .status(500)
+        .json({ error: "Failed to validate technology with NVD API." });
+    }
+
     // Part that does the updating
     const { data: insertData, error: insertError } = await supabase
       .from("watchlist")
