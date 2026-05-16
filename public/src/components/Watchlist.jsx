@@ -1,29 +1,24 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
-function Watchlist({ currentUserId, watchlist, setWatchlist }) {
+function Watchlist({
+  currentUserId,
+  watchlist,
+  setWatchlist,
+  refreshWatchlist,
+}) {
   const [newTech, setNewTech] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchList = async () => {
-      const response = await fetch(
-        `/api/vulnerabilities?userId=${currentUserId}`
-      );
-      const data = await response.json();
-      setWatchlist(data);
-    };
-    if (currentUserId) fetchList();
-  }, [currentUserId]);
-
   const addToWatchlist = async () => {
+    if (!newTech.trim()) return;
     setIsLoading(true);
     try {
       const response = await fetch("/api/watchlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          tech_name: newTech,
+          tech_name: newTech.trim().toLowerCase(),
           user_id: currentUserId,
         }),
       });
@@ -31,9 +26,11 @@ function Watchlist({ currentUserId, watchlist, setWatchlist }) {
       if (!response.ok) {
         setError(result.error);
       } else {
-        setWatchlist([...watchlist, result]);
         setNewTech("");
         setError("");
+        if (refreshWatchlist) {
+          await refreshWatchlist();
+        }
       }
     } catch (error) {
       setError("Network error. Please try again.");
@@ -52,9 +49,10 @@ function Watchlist({ currentUserId, watchlist, setWatchlist }) {
       );
       if (response.ok) {
         setWatchlist(
-          watchlist.filter(
-            (item) => item.tech_name !== techName.trim().toLowerCase()
-          )
+          watchlist.filter((item) => {
+            const currentName = item.tech || item.tech_name;
+            return currentName?.toLowerCase() !== techName.trim().toLowerCase();
+          })
         );
       } else {
         const result = await response.json();
@@ -67,28 +65,41 @@ function Watchlist({ currentUserId, watchlist, setWatchlist }) {
 
   return (
     <div>
-      <h2>My Tech Watchlist</h2>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
       <input
         type="text"
         value={newTech}
         onChange={(change) => setNewTech(change.target.value)}
         placeholder="Add new technology..."
+        style={{
+          padding: "8px",
+          borderRadius: "4px",
+          border: "1px solid #ccc",
+          marginRight: "8px",
+        }}
       />
       <button onClick={addToWatchlist} disabled={isLoading}>
         {isLoading ? "Checking NVD Database..." : "Add"}
       </button>
 
-      <ul>
-        {watchlist.map((item) => (
-          <li key={item.id}>
-            {item.tech_name}{" "}
-            <button onClick={() => deleteTech(item.tech || item.tech_name)}>
-              Delete
-            </button>
-          </li>
-        ))}
+      {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
+
+      <ul style={{ marginTop: "20px", listStyle: "none", padding: 0 }}>
+        {watchlist.map((item, idx) => {
+          const nameToDisplay = item.tech || item.tech_name;
+          return (
+            <li
+              key={item.id || nameToDisplay || idx}
+              style={{ marginBottom: "10px" }}
+            >
+              <span
+                style={{ textTransform: "capitalize", marginRight: "10px" }}
+              >
+                {nameToDisplay}
+              </span>{" "}
+              <button onClick={() => deleteTech(nameToDisplay)}>Delete</button>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

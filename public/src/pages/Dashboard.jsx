@@ -10,10 +10,7 @@ async function watchlist() {
 
 //Let's import the watchlist and get this show on the road.
 
-/*This imports the watchlist component and creates the dashboard.
-  It'll also accept the logged-in users ID and then give the user ID 
-  to the watchlist so it can display the correct watchlist */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Watchlist from "../components/Watchlist";
 import WatchlistCarousel from "../components/WatchlistCarousel";
 
@@ -22,23 +19,25 @@ function Dashboard({ currentUserId }) {
   const [watchlist, setWatchlist] = useState([]);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    const fetchList = async () => {
-      try {
-        const response = await fetch(
-          `/api/vulnerabilities?userId=${currentUserId}`
-        );
-        const data = await response.json();
-        setWatchlist(data);
-      } catch (error) {
-        setError("Failed to load watchlist data.");
-      }
-    };
+  // Maybe useCallback
+  const fetchList = useCallback(async () => {
+    try {
+      const response = await fetch(
+        `/api/vulnerabilities?userId=${currentUserId}`
+      );
+      const data = await response.json();
+      setWatchlist(data);
+    } catch (error) {
+      setError("Failed to load watchlist data.");
+    }
+  }, [currentUserId]);
 
+  useEffect(() => {
     if (currentUserId) {
       fetchList();
     }
-  }, [currentUserId]);
+  }, [currentUserId, fetchList]);
+
   const deleteTech = async (techName) => {
     try {
       const response = await fetch(
@@ -71,6 +70,7 @@ function Dashboard({ currentUserId }) {
           currentUserId={currentUserId}
           watchlist={watchlist}
           setWatchlist={setWatchlist}
+          refreshWatchlist={fetchList} // Pass this down so your Add input form can trigger a re-fetch
         />
       </section>
 
