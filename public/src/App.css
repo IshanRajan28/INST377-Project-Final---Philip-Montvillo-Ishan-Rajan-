@@ -330,12 +330,12 @@ input:focus {
   background: #1f1f1f;
   color: white;
   border: none;
-  width: 28px;
+  width: 40px;
   height: 28px;
   padding: 0;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 800;
   flex-shrink: 0;
 
@@ -358,7 +358,7 @@ input:focus {
 }
 
 .dashboardThreats h1 {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 900;
   letter-spacing: 0.5px;
 }
@@ -409,6 +409,10 @@ input:focus {
   text-align: center;
 }
 
+.dashboardThreats h1{
+  background: rgb(154, 11, 11);
+}
+
 /* Styling swiper carousel */
 .swiper {
   width: 100%;
@@ -421,7 +425,6 @@ input:focus {
 }
 
 .swiper-slide {
-  width: 320px !important;
   height: auto;
   box-sizing: border-box;
 }
@@ -490,10 +493,10 @@ input:focus {
   background: #1f2a38;
   color: white;
   margin: 0;
-  padding: 12px 31px;
+  padding: 12px 20px;
   border-radius: 16px;
   text-transform: capitalize;
-  font-size: 1.55rem;
+  font-size: 1.25rem;
   font-weight: 850;
-  letter-spacing: 0.3px;
+  letter-spacing: 1px;
 }

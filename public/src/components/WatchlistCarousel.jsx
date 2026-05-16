@@ -25,7 +25,7 @@ function WatchlistCarousel({ watchlist }) {
               modules={[Navigation]}
               navigation
               spaceBetween={20}
-              slidesPerView="auto"
+              slidesPerView={3}
               >
 
               {item?.details?.vulnerabilities?.map((bug, bugIndex) => {
