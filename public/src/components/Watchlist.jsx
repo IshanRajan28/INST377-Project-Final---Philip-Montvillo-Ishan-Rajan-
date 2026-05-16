@@ -7,7 +7,9 @@ function Watchlist({ currentUserId, watchlist, setWatchlist }) {
 
   useEffect(() => {
     const fetchList = async () => {
-      const response = await fetch(`/api/watchlist?userId=${currentUserId}`);
+      const response = await fetch(
+        `/api/vulnerabilities?userId=${currentUserId}`
+      );
       const data = await response.json();
       setWatchlist(data);
     };
