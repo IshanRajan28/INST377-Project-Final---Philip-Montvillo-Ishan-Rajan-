@@ -12,10 +12,10 @@ app.use(express.static("public"));
 app.use(express.json());
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseKey = process.env.VITE_SUPABASE_KEY;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const NVD_API_KEY = process.env.NVD_API_KEY;
 
-const supabase = supabaseClient.createClient(supabaseUrl, supabaseKey);
+const supabase = supabaseClient.createClient(supabaseUrl, supabaseServiceKey);
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "src", "index.html"));
@@ -44,6 +44,7 @@ app.get("/api/watchlist", async (req, res) => {
 // Call this endpoint to update the user's watchlist on supabase and the frontend.
 app.post("/api/watchlist", async (req, res) => {
   try {
+    console.log("Backend received payload:", req.body);
     const userId = req.body.user_id;
     const cleanTechName = req.body.tech_name.trim().toLowerCase();
 
