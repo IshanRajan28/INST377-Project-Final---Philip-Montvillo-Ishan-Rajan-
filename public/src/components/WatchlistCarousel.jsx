@@ -10,7 +10,9 @@ function WatchlistCarousel({ watchlist, deleteTech }) {
 
   return (
     <div>
-      {watchlist.map((item) => (
+      // Just in case the watchlist is null when loading it skips, so the
+      dashboard doesn't crash
+      {watchlist?.map((item) => (
         <div key={item.id} className="techRow">
           <div className="techRowHeader">
             <h2>{item.tech_name}</h2>
