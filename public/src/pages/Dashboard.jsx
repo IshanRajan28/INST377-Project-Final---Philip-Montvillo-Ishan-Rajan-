@@ -18,6 +18,7 @@ import Watchlist from "../components/Watchlist";
 import WatchlistCarousel from "../components/WatchlistCarousel";
 
 function Dashboard({ currentUserId }) {
+  console.log("Dashboard rendered! currentUserId is currently:", currentUserId);
   const [watchlist, setWatchlist] = useState([]);
   const [error, setError] = useState("");
 
