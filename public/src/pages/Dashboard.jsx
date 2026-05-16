@@ -16,7 +16,82 @@ import WatchlistCarousel from "../components/WatchlistCarousel";
 
 function Dashboard({ currentUserId }) {
   console.log("Dashboard rendered! currentUserId is currently:", currentUserId);
-  const [watchlist, setWatchlist] = useState([]);
+// Temporary test data so we can style the dashboard and work on the carousel, just remove the fake data from inside the const and everything will be good :)
+const [watchlist, setWatchlist] = useState([
+  {
+    tech: "react",
+    details: {
+      vulnerabilities: [
+        {
+          cve: {
+            id: "CVE-2024-1234",
+            published: "2024-10-15T00:00:00.000",
+            descriptions: [
+              {
+                lang: "en",
+                value:
+                  "Fake React vulnerability data used only for dashboard styling while the backend is being fixed.",
+              },
+            ],
+            metrics: {
+              cvssMetricV31: [
+                {
+                  cvssData: {
+                    baseScore: 8.1,
+                  },
+                },
+              ],
+            },
+          },
+        },
+        {
+          cve: {
+            id: "CVE-2024-5678",
+            published: "2024-08-21T00:00:00.000",
+            descriptions: [
+              {
+                lang: "en",
+                value:
+                  "Second fake React CVE so we can test moving through multiple cards in the carousel.",
+              },
+            ],
+            metrics: {
+              cvssMetricV31: [
+                {
+                  cvssData: {
+                    baseScore: 5.6,
+                  },
+                },
+              ],
+            },
+          },
+        },
+        {
+          cve: {
+            id: "CVE-2024-9999",
+            published: "2024-05-03T00:00:00.000",
+            descriptions: [
+              {
+                lang: "en",
+                value:
+                  "Third fake React CVE used to make sure the carousel has enough cards to slide through.",
+              },
+            ],
+            metrics: {
+              cvssMetricV31: [
+                {
+                  cvssData: {
+                    baseScore: 9.4,
+                  },
+                },
+              ],
+            },
+          },
+        },
+      ],
+    },
+  },
+]);
   const [error, setError] = useState("");
 
   // Maybe useCallback
@@ -32,11 +107,12 @@ function Dashboard({ currentUserId }) {
     }
   }, [currentUserId]);
 
-  useEffect(() => {
-    if (currentUserId) {
-      fetchList();
-    }
-  }, [currentUserId, fetchList]);
+  //Disabling this so fake CVE test data stays visible while I wait on getting the needed additional supabase keys.
+  //useEffect(() => {
+  //  if (currentUserId) {
+  //    fetchList();
+  //  }
+  //}, [currentUserId, fetchList]);
 
   const deleteTech = async (techName) => {
     try {

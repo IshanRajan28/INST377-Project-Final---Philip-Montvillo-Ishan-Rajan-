@@ -380,3 +380,28 @@ input:focus {
   font-weight: 700;
   color: #1f1f1f;
 }
+
+/* Styling swiper carousel */
+.swiper {
+  width: 100%;
+  padding: 8px 40px 28px;
+  box-sizing: border-box;
+}
+
+.swiper-wrapper {
+  align-items: stretch;
+}
+
+.swiper-slide {
+  width: 360px !important;
+  height: auto;
+  box-sizing: border-box;
+}
+
+.swiper-slide .cveCard {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  margin: 0;
+  box-sizing: border-box;
+}
