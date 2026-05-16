@@ -155,12 +155,8 @@ app.get("/api/vulnerabilities", async (req, res) => {
     for (const row of data) {
       const convertedName = encodeURIComponent(row.tech_name);
       const NVD_Data = await fetch(
-        `https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=${convertedName}`,
-        {
-          headers: {
-            apiKey: NVD_API_KEY,
-          },
-        }
+        `https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=${convertedName}&resultsPerPage=15`,
+        { headers: { apiKey: NVD_API_KEY } }
       );
       const information = await NVD_Data.json();
 
