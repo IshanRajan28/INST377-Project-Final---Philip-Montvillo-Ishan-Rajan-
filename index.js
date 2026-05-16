@@ -160,6 +160,13 @@ app.get("/api/vulnerabilities", async (req, res) => {
         );
         const information = await NVD_Data.json();
 
+        console.log(`--- NVD Response for ${row.tech_name} ---`);
+        console.log("Total Results:", information.totalResults);
+        console.log(
+          "Vulnerabilities Array Length:",
+          information.vulnerabilities?.length
+        );
+
         return {
           tech: row.tech_name,
           details: information,
