@@ -2,6 +2,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import CveCard from "./CveCard";
 
 import "swiper/css";
+import "swiper/css/navigation";
 
 function WatchlistCarousel({ watchlist, deleteTech }) {
   if (!watchlist || watchlist.length === 0) {
@@ -22,7 +23,17 @@ function WatchlistCarousel({ watchlist, deleteTech }) {
               </button>
             </div>
 
-            <Swiper spaceBetween={0} slidesPerView={1} grabCursor={true}>
+            <Swiper
+              modules={[Navigation]}
+              navigation={true}
+              spaceBetween={0}
+              slidesPerView={1}
+              grabCursor={true}
+              style={{
+                width: "100%",
+                padding: "0 50px",
+              }}
+            >
               {item?.details?.vulnerabilities?.map((bug, bugIndex) => {
                 const cveData = bug.cve || bug;
 
