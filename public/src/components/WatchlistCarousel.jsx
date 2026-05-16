@@ -23,17 +23,7 @@ function WatchlistCarousel({ watchlist, deleteTech }) {
               </button>
             </div>
 
-            <Swiper
-              modules={[Navigation]}
-              navigation={true}
-              spaceBetween={0}
-              slidesPerView={1}
-              grabCursor={true}
-              style={{
-                width: "100%",
-                padding: "0 50px",
-              }}
-            >
+            <Swiper>
               {item?.details?.vulnerabilities?.map((bug, bugIndex) => {
                 const cveData = bug.cve || bug;
 
