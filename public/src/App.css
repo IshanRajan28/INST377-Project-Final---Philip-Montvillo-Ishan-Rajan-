@@ -1,11 +1,17 @@
 body {
   margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   background: linear-gradient(135deg, #1f2a38, #536976, #8fa1ac);
   font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+}
+
+input {
+  padding: 12px;
+  border: 1px solid #b5c0cc;
+  border-radius: 8px;
+  background-color: white;
+  color: #1f2a38;
+  box-sizing: border-box;
 }
 
 .login-container {
@@ -17,39 +23,12 @@ body {
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.32);
 }
 
-h1 {
-  background: #1f2a38;
-  color: white;
-  margin: 0;
-  padding: 24px 20px;
-  font-size: 1.35rem;
-  text-align: center;
-  letter-spacing: 0.2px;
-  font-weight: 700;
-}
-
-form {
-  padding: 24px;
-}
-
 label {
   display: block;
   font-size: 14px;
   margin-bottom: 7px;
   font-weight: 700;
   color: #1f2a38;
-}
-
-input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #b5c0cc;
-  border-radius: 8px;
-  font-family: "Segoe UI", Arial, Helvetica, sans-serif;
-  font-size: 14px;
-  background-color: white;
-  color: #1f2a38;
-  box-sizing: border-box;
 }
 
 input:focus {
@@ -62,15 +41,6 @@ input:focus {
   background: #2980b9;
   color: white;
   border: none;
-  width: 100%;
-  padding: 13px;
-  margin-top: 18px;
-  cursor: pointer;
-  font-size: 15px;
-  font-weight: 700;
-  border-radius: 8px;
-  font-family: "Segoe UI", Arial, Helvetica, sans-serif;
-  transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 .login-button:hover {
@@ -82,6 +52,11 @@ input:focus {
   background: #e8eef3;
   color: #1f2a38;
   border: 1px solid #c4ced8;
+}
+
+.login-button,
+.signup-button,
+.aboutButton {
   width: 100%;
   padding: 13px;
   margin-top: 12px;
@@ -89,7 +64,6 @@ input:focus {
   font-size: 15px;
   font-weight: 700;
   border-radius: 8px;
-  font-family: "Segoe UI", Arial, Helvetica, sans-serif;
   transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
@@ -114,7 +88,6 @@ input:focus {
   line-height: 1.45;
 }
 
-/* The styles below are for the CVE cards that'll eventually be put up on the dashboard page. They're not being used yet, but I tested them by making a fake one in the app.jsx and it looked pretty good :) */
 .cveCard {
   background: #f8fafc;
   border: 2px solid #c0392b;
@@ -123,7 +96,6 @@ input:focus {
   margin: 30px auto 16px;
   max-width: 700px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-  font-family: "Segoe UI", Arial, Helvetica, sans-serif;
 }
 
 .cveCardHeader {
@@ -190,11 +162,6 @@ input:focus {
 }
 
 /*Alright, these are the CSS stylings for the login and about pages.*/
-.loginPageLayout {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
 .aboutSideButtonContainer {
   display: flex;
@@ -205,17 +172,8 @@ input:focus {
   background: #27ae60;
   color: white;
   border: 1px solid #1e8449;
-  width: 100%;
-  padding: 13px;
-  margin-top: 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-family: "Segoe UI", Arial, Helvetica, sans-serif;
-  font-size: 15px;
   font-weight: 750;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-  transition: background-color 0.2s ease, transform 0.2s ease,
-    box-shadow 0.1s ease;
 }
 
 .aboutButton:hover {
@@ -225,12 +183,16 @@ input:focus {
 }
 
 .aboutPage {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   padding: 16px;
   box-sizing: border-box;
+}
+
+.loginPageLayout,
+.aboutPage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .aboutCard {
@@ -289,7 +251,6 @@ input:focus {
   font-size: 14px;
   font-weight: 700;
   border-radius: 8px;
-  font-family: "Segoe UI", Arial, Helvetica, sans-serif;
   transition: background-color 0.25s ease, transform 0.25s ease,
     box-shadow 0.25s ease;
 }
@@ -304,13 +265,12 @@ input:focus {
 
 .dashboardLayout {
   min-height: 100vh;
-  width: 100vw;
+  width: 100%;
   display: flex;
   gap: 28px;
   padding: 36px;
   box-sizing: border-box;
-  background: #202020;
-  font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+  background: transparent;
 }
 
 /* Left watchlist panel */
@@ -336,6 +296,7 @@ input:focus {
 /* This is the styling for the right active threats panel */
 .dashboardThreats {
   flex: 1;
+  min-width: 0;
   background: #d9d9d9;
   border-radius: 18px;
   padding: 28px;
@@ -399,14 +360,4 @@ input:focus {
   margin-bottom: 10px;
   font-weight: 700;
   color: #1f1f1f;
-}
-
-/* This is the CVE Card Placeholder */
-.cveCard {
-  background: #eeeeee;
-  border: 2px solid #1f1f1f;
-  border-radius: 14px;
-  padding: 18px;
-  margin: 18px 0;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
 }
