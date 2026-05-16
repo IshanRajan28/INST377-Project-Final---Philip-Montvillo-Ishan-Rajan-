@@ -14,7 +14,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import Watchlist from "../components/Watchlist";
 import WatchlistCarousel from "../components/WatchlistCarousel";
 
-function Dashboard({ currentUserId }) {
+function Dashboard({ currentUserId, onLogout }) {
   console.log("Dashboard rendered! currentUserId is currently:", currentUserId);
 // Temporary test data so we can style the dashboard and work on the carousel, just remove the fake data from inside the const and everything will be good :)
   const [watchlist, setWatchlist] = useState([]);
@@ -67,12 +67,21 @@ function Dashboard({ currentUserId }) {
     <main className="dashboardLayout">
       <section className="dashboardWatchlist">
         <h1>Watchlist</h1>
+
         <Watchlist
           currentUserId={currentUserId}
           watchlist={watchlist}
           setWatchlist={setWatchlist}
           refreshWatchlist={fetchList} // Pass this down so your Add input form can trigger a re-fetch
         />
+
+          <button
+          type="button"
+          className="dashboardLogout"
+          onClick={onLogout}
+          >
+          Log out!
+        </button>
       </section>
 
       {/* Cool, now let's add the right side of the dashboard that'll display active threats */}

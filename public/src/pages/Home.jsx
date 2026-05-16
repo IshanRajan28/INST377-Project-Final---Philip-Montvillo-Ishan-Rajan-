@@ -51,8 +51,21 @@ function LoginPage() {
     }
     setLoading(false);
   };
+
+  //Adding ability to logout.
+  const logout = async () => {
+    await supabase.auth.signOut();
+    setCurrentUser(null);
+    setShowAbout(false);
+  };
+  
     if (currentUser){
-      return <Dashboard currentUserId={currentUser.id} />
+      return (
+      <Dashboard 
+      currentUserId={currentUser.id}
+      onLogout={logout}
+        />
+      )
     }
 
     if (showAbout) {
@@ -86,6 +99,7 @@ function LoginPage() {
           <button type="submit" disabled={loading} className="login-button">
             Login
           </button>
+
           <button
             type="button"
             disabled={loading}

@@ -300,6 +300,9 @@ input:focus {
   padding: 22px;
   box-sizing: border-box;
   box-shadow: 0 14px 35px rgba(0, 0, 0, 0.35);
+  min-height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
 }
 
 .dashboardWatchlist h1 {
@@ -406,16 +409,6 @@ input:focus {
   margin-top: 18px;
 }
 
-.dashboardWatchlist li {
-  background: #f4f4f4;
-  border: 1px solid #b8b8b8;
-  border-radius: 8px;
-  padding: 10px 12px;
-  margin-bottom: 10px;
-  font-weight: 700;
-  color: #1f1f1f;
-}
-
 /* Styling swiper carousel */
 .swiper {
   width: 100%;
@@ -428,7 +421,7 @@ input:focus {
 }
 
 .swiper-slide {
-  width: 360px !important;
+  width: 360px;
   height: auto;
   box-sizing: border-box;
 }
@@ -439,4 +432,22 @@ input:focus {
   height: 100%;
   margin: 0;
   box-sizing: border-box;
+}
+
+/* Logout button styling */
+.dashboardWatchlist .dashboardLogout {
+  margin-top: auto;
+  width: 100%;
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 13px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 750;
+  transition: background-color 0.1s ease, transform 0.1s ease;
+}
+
+.dashboardWatchlist .dashboardLogout:hover {
+  background: #ea1212;
 }
