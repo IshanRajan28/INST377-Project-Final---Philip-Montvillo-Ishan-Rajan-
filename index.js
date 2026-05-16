@@ -91,6 +91,7 @@ app.post("/api/watchlist", async (req, res) => {
         .json({ error: "You are already tracking this technology!" });
     }
 
+    // Checks if the technology is part of the NVD database
     try {
       const nvdResponse = await fetch(
         `https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=${cleanTechName}`,
@@ -181,7 +182,7 @@ app.get("/api/vulnerabilities", async (req, res) => {
     res.status(500).json({ message: "Server Failed" });
   }
 });
-// ENDPOINT 4: Removes a tech from the database
+// ENDPOINT 4: Removes a tech from the database nd frontend
 app.delete("/api/watchlist", async (req, res) => {
   const userId = req.query.userId;
   const cleanTechName = req.query.tech_name.trim().toLowerCase();
