@@ -1,4 +1,4 @@
-function CveCard({ cve }) {
+function CveCard({ cve, techName }) {
   // If cve.cve exists, use it; otherwise just use cve.
   const cveData = cve?.cve || cve;
 
@@ -39,6 +39,7 @@ function CveCard({ cve }) {
 
   return (
     <article className={`cveCard ${severity}`}>
+      <span className="techLabel">{techName}</span>
       <div className="cveCardHeader">
         <h3>{cveId}</h3>
 
