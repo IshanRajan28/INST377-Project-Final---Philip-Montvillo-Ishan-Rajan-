@@ -1,5 +1,5 @@
 // This'll be that static about page where we explain the purposes of the vulnerability tracking app. 
-function About({ goBackToLogin }) {
+function About({ goBackToLogin, backButtonText = "Back to Login Page" }) {
   return (
     <main className="aboutPage">
       <section className="aboutCard">
@@ -53,7 +53,7 @@ function About({ goBackToLogin }) {
         type="button"
         className="backToLoginButton" 
         onClick={goBackToLogin}>
-          Back to Login Page
+          {backButtonText}
         </button>
       </section>
     </main>

@@ -180,7 +180,7 @@ input:focus {
   background: #7f8c8d;
 }
 
-/*Alright, these are the CSS stylings for the login and about pages.*/
+/*Login and about page styling*/
 
 .aboutSideButtonContainer {
   display: flex;
@@ -350,7 +350,7 @@ input:focus {
 }
 
 
-/* This is the styling for the right active threats panel */
+/* Right active threats panel */
 .dashboardThreats {
   flex: 1;
   min-width: 0;
@@ -434,20 +434,38 @@ input:focus {
   box-sizing: border-box;
 }
 
-/* Logout button styling */
+/* Dashboard bottom navigation buttons */
+
+.dashboardWatchlist .dashboardAbout,
 .dashboardWatchlist .dashboardLogout {
-  margin-top: auto;
   width: 100%;
-  background: #dc2626;
   color: white;
-  border: none;
-  padding: 13px 14px;
-  border-radius: 12px;
+  padding: 11px 14px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: 750;
-  transition: background-color 0.1s ease, transform 0.1s ease;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.dashboardWatchlist .dashboardAbout {
+  margin-top: auto;
+  margin-bottom: 12px;
+  background: #27ae60;
+  border: 1px solid #1e8449;
+}
+
+.dashboardWatchlist .dashboardAbout:hover {
+  background: #229954;
+  transform: translateY(-1px);
+}
+
+.dashboardWatchlist .dashboardLogout {
+  margin-top: 0;
+  background: #dc2626;
+  border: none;
 }
 
 .dashboardWatchlist .dashboardLogout:hover {
-  background: #ea1212;
+  background: #b91c1c;
+  transform: translateY(-1px);
 }

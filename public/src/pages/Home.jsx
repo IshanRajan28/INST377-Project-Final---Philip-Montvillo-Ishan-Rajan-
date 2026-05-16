@@ -58,19 +58,25 @@ function LoginPage() {
     setCurrentUser(null);
     setShowAbout(false);
   };
-  
+
+    if (showAbout) {
+      return (
+      <About goBackToLogin={() => setShowAbout(false)} 
+      backButtonText={currentUser ? "Back to Dashboard" : "Back to Login"}
+      />
+      );
+    }
+
     if (currentUser){
       return (
       <Dashboard 
-      currentUserId={currentUser.id}
-      onLogout={logout}
+        currentUserId={currentUser.id}
+        onLogout={logout}
+        onShowAbout={() => setShowAbout(true)}
         />
-      )
+      );
     }
 
-    if (showAbout) {
-      return <About goBackToLogin={() => setShowAbout(false)} />;
-    }
 
   return (
     <>
