@@ -44,7 +44,6 @@ app.get("/api/watchlist", async (req, res) => {
 // Call this endpoint to update the user's watchlist on supabase and the frontend.
 app.post("/api/watchlist", async (req, res) => {
   try {
-    console.log("Backend received payload:", req.body);
     const userId = req.body.user_id;
     const cleanTechName = req.body.tech_name.trim().toLowerCase();
 
