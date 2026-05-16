@@ -4,6 +4,7 @@ function Watchlist({ currentUserId }) {
   const [watchlist, setWatchlist] = useState([]);
   const [newTech, setNewTech] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchList = async () => {
@@ -15,21 +16,28 @@ function Watchlist({ currentUserId }) {
   }, [currentUserId]);
 
   const addToWatchlist = async () => {
-    const response = await fetch("/api/watchlist", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        tech_name: newTech,
-        user_id: currentUserId,
-      }),
-    });
-    const result = await response.json();
-    if (!response.ok) {
-      setError(result.error);
-    } else {
-      setWatchlist([...watchlist, result]);
-      setNewTech("");
-      setError("");
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/watchlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tech_name: newTech,
+          user_id: currentUserId,
+        }),
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        setError(result.error);
+      } else {
+        setWatchlist([...watchlist, result]);
+        setNewTech("");
+        setError("");
+      }
+    } catch (error) {
+      setError("Network error. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -67,13 +75,15 @@ function Watchlist({ currentUserId }) {
         onChange={(change) => setNewTech(change.target.value)}
         placeholder="Add new technology..."
       />
-      <button onClick={addToWatchlist}>Add</button>
+      <button onClick={addToWatchlist} disabled={isLoading}>
+        {isLoading ? "Checking NVD Database..." : "Add"}
+      </button>
 
       <ul>
         {watchlist.map((item) => (
           <li key={item.id}>
             {item.tech_name}{" "}
-            <button onClick={() => deleteTech(item.tech_name)}></button>
+            <button onClick={() => deleteTech(item.tech_name)}>Delete</button>
           </li>
         ))}
       </ul>
