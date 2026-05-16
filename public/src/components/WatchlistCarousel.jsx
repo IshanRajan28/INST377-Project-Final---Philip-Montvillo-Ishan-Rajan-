@@ -10,8 +10,8 @@ function WatchlistCarousel({ watchlist, deleteTech }) {
 
   return (
     <div>
-      // Just in case the watchlist is null when loading it skips, so the
-      dashboard doesn't crash
+      {/* Just in case the watchlist is null when loading it skips, so the
+      dashboard doesn't crash */}
       {watchlist?.map((item) => (
         <div key={item.id} className="techRow">
           <div className="techRowHeader">
@@ -20,8 +20,8 @@ function WatchlistCarousel({ watchlist, deleteTech }) {
               Stop Tracking
             </button>
           </div>
-          // Just in case the watchlist is null when loading it skips, so the
-          dashboard doesn't crash
+          {/* Just in case the watchlist is null when loading it skips, so the
+      dashboard doesn't crash */}
           <Swiper spaceBetween={20} slidesPerView={3} grabCursor={true}>
             {item.vulnerabilities?.map((bug) => (
               <SwiperSlide key={bug.id}>
