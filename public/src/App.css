@@ -382,8 +382,9 @@ input:focus {
   width: 100%;
   padding: 11px;
   border: 1px solid #9a9a9a;
-  border-radius: 8px;
+  border-radius: 12px;
   box-sizing: border-box;
+  background: white;
   margin-bottom: 10px;
 }
 
@@ -407,6 +408,17 @@ input:focus {
   list-style: none;
   padding: 0;
   margin-top: 18px;
+}
+
+.dashboardWatchlist h1,
+.dashboardThreats h1 {
+  background: #4486dc;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 12px;
+  margin: 0 0 10px;
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.18);
+  text-align: center;
 }
 
 /* Styling swiper carousel */
