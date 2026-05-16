@@ -25,6 +25,9 @@ app.get("/", (req, res) => {
 // Call this endpoint to get the user's watchlist of all of the technologies they are using.
 app.get("/api/watchlist", async (req, res) => {
   const userId = req.query.userId;
+  if (!userId || userId === "undefined") {
+    return res.status(200).json([]);
+  }
   try {
     const { data, error } = await supabase
       .from("watchlist")
@@ -58,14 +61,14 @@ app.post("/api/watchlist", async (req, res) => {
     }
 
     // Checks if the count of a user's watchlist is greater than 5
-    const { count, error } = await supabase
+    const { count, error: countError } = await supabase
       .from("watchlist")
       .select("*", { count: "exact", head: true })
       .eq("user_id", userId);
     //npm run server is no longer working and I think it's because we have created a variable error HERE while also making one on line 64, thus giving me an error.
-    if (error) {
-      console.log(error);
-      return res.status(400).json({ error: error.message });
+    if (countError) {
+      console.log(countError);
+      return res.status(400).json({ error: countError.message });
     }
 
     if (count >= 5) {
