@@ -5,7 +5,7 @@ import CveCard from "./CveCard";
 import "swiper/css";
 import "swiper/css/navigation";
 
-function WatchlistCarousel({ watchlist, deleteTech }) {
+function WatchlistCarousel({ watchlist }) {
   if (!watchlist || watchlist.length === 0) {
     return <p>Your watchlist is empty.</p>;
   }
@@ -19,9 +19,6 @@ function WatchlistCarousel({ watchlist, deleteTech }) {
           <div key={item.id || displayName || index} className="techRow">
             <div className="techRowHeader">
               <h2>{displayName}</h2>
-              <button onClick={() => deleteTech(displayName)}>
-                Stop Tracking
-              </button>
             </div>
 
             <Swiper
