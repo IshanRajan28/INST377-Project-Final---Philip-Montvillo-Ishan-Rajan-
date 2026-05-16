@@ -20,9 +20,10 @@ function WatchlistCarousel({ watchlist, deleteTech }) {
               Stop Tracking
             </button>
           </div>
-
+          // Just in case the watchlist is null when loading it skips, so the
+          dashboard doesn't crash
           <Swiper spaceBetween={20} slidesPerView={3} grabCursor={true}>
-            {item.vulnerabilities.map((bug) => (
+            {item.vulnerabilities?.map((bug) => (
               <SwiperSlide key={bug.id}>
                 <CveCard cve={bug} techName={item.tech_name} />
               </SwiperSlide>
