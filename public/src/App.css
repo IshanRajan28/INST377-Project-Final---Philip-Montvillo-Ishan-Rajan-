@@ -23,6 +23,25 @@ input {
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.32);
 }
 
+.login-container h1 {
+  background: #1f2a38;
+  color: white;
+  margin: 0;
+  padding: 24px 20px;
+  font-size: 1.35rem;
+  text-align: center;
+  letter-spacing: 0.2px;
+  font-weight: 700;
+}
+
+.login-container form {
+  padding: 24px;
+}
+
+.login-container input {
+  width: 100%;
+}
+
 label {
   display: block;
   font-size: 14px;
