@@ -57,4 +57,7 @@ For the API Endpoint there are four of them:
 
 #### Known bugs and a road-map for future development
 
-First, since the API only shows vulnerabilities that occured while ago, like in the 90s, we have to figure out how to show new vulnerabilities, because sometimes in 2026 in returns no vulnerabilities.
+- **Current Bug :** First, since the API only shows vulnerabilities that occurred a while ago, like some vulnerabilities show in the 90s, we have to figure out how to show new vulnerabilities, because sometimes in 2026 it returns no vulnerabilities.
+- **Future Feature :** Right now, users are strictly capped at tracking 5 technologies and viewing 5 CVEs per technology. A major roadmap goal is to increase that amount so developers can scale up their watchlist based on larger enterprise environments.
+- **Future Feature :** We want to add a notification system that automatically alerts a user the moment a critical-level CVE is published for a technology on their watchlist.
+- **Code Optimization :** To avoid hitting NVD API rate limits and speed up dashboard loading times, we plan to implement backend caching so the server doesn't have to fetch duplicate data from the external API on every single page refresh.
