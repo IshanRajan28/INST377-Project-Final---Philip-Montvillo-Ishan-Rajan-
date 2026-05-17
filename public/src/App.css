@@ -129,11 +129,15 @@ input:focus {
 .cveCard h3 {
   margin: 0;
   color: #1f2a38;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .cveCard p {
   color: #34495e;
   line-height: 1.5;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .severityBadge {
