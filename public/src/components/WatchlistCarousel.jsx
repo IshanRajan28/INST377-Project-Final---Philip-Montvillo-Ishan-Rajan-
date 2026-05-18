@@ -38,8 +38,10 @@ function WatchlistCarousel({ watchlist }) {
             {vulnerabilities.length === 0 ? (
               <p className="empty-state-hint">
                 {item.details?.fetchError
-                  ? `Could not load CVE data for ${displayName}. The NVD API may be rate-limited — wait a moment and refresh.`
-                  : `No CVEs matched "${displayName}". Try a specific keyword like express, django, spring, or webpack.`}
+                  ? `Could not reach NVD for ${displayName}. Wait 30 seconds and refresh, or confirm NVD_API_KEY is set on the server.`
+                  : item.details?.noRelevantResults
+                    ? `NVD returned results for "${displayName}", but none matched this product after filtering. Try nodejs, python, or react.`
+                    : `No CVEs found for ${displayName}. Try nodejs, python, react, or express.`}
               </p>
             ) : (
               <>
