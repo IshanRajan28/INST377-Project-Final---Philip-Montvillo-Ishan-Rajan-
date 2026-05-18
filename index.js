@@ -210,12 +210,48 @@ function matchesCpePatterns(cpeCriteria, patterns) {
   );
 }
 
+const NODEJS_FALSE_POSITIVE =
+  /\btabby\b|terminus|terminal emulator|electron app|vscode|visual studio code|alacritty|wezterm|iterm|hyper terminal|desktop application|web browser/i;
+
+function isRelevantNodejsCve(cve) {
+  const desc = (
+    cve.descriptions?.find((d) => d.lang === "en")?.value || ""
+  ).toLowerCase();
+  const cpeCriteria = collectCpeCriteria(cve);
+  const cpeText = cpeCriteria.join(" ");
+  const haystack = `${cve.id || ""} ${desc} ${cpeText}`.toLowerCase();
+
+  if (NODEJS_FALSE_POSITIVE.test(haystack)) {
+    return false;
+  }
+
+  const strictNodeCpe = cpeCriteria.some(
+    (cpe) => cpe.includes(":nodejs:node.js:") || cpe.includes(":nodejs:node:")
+  );
+  if (strictNodeCpe) {
+    return true;
+  }
+
+  const nodeInDescription =
+    /\bnode\.?js\b|\bnodejs\b|snowflake-connector-nodejs|-nodejs\b/.test(desc);
+  const nodeEcosystemContext =
+    /\b(runtime|npm|package|module|driver|sdk|connector|library|framework)\b/.test(
+      desc
+    );
+
+  return nodeInDescription && nodeEcosystemContext;
+}
+
 function isRelevantCve(keyword, entry) {
   const config = NVD_TECH_CONFIG[keyword];
   if (!config) return true;
 
   const cve = entry?.cve;
   if (!cve) return false;
+
+  if (keyword === "nodejs") {
+    return isRelevantNodejsCve(cve);
+  }
 
   const cpeCriteria = collectCpeCriteria(cve);
   if (
@@ -228,14 +264,6 @@ function isRelevantCve(keyword, entry) {
   const desc = (
     cve.descriptions?.find((d) => d.lang === "en")?.value || ""
   ).toLowerCase();
-
-  if (keyword === "nodejs") {
-    const mentionsNode = /\bnode\.?js\b|\bnodejs\b/.test(desc);
-    const unrelatedApp =
-      /\btabby\b|terminus|terminal emulator|desktop application/.test(desc) &&
-      !/\bnode\.?js\b|\bnodejs\b/.test(desc);
-    return mentionsNode && !unrelatedApp;
-  }
 
   const descPatterns = {
     python: /\bpython\b(?!\.org)/,
