@@ -1,16 +1,27 @@
 # Vulnerability Tracker
 
-A full-stack web app that helps developers monitor **CVE vulnerabilities** for technologies in their stack. Instead of searching the full [NIST NVD](https://nvd.nist.gov/) manually, you maintain a personal watchlist and browse severity-ranked threats on a dashboard.
+A full-stack web app that helps developers monitor **CVE vulnerabilities** for technologies in their stack. Instead of searching the [NIST NVD](https://nvd.nist.gov/) manually, you build a personal watchlist and browse severity-ranked threats on one dashboard.
 
 **Live demo:** [https://inst-377-project-final-philip-montv.vercel.app/](https://inst-377-project-final-philip-montv.vercel.app/)
 
+## Screenshots
+
+| Login | Dashboard |
+|-------|-----------|
+| ![Login page](docs/screenshots/login.png) | ![Dashboard with CVE cards and CVSS badges](docs/screenshots/dashboard.png) |
+
+| About |
+|-------|
+| ![About page with project overview and tech stack](docs/screenshots/about.png) |
+
 ## Features
 
-- Email/password authentication with **Supabase Auth** (sessions persist across page refresh)
-- Personal technology watchlist (up to 5 items, validated against NVD)
-- CVE carousel per technology with **CVSS severity** badges (critical → low)
-- Responsive layout for desktop, tablet, and mobile
-- REST API backed by **Express** and **Supabase Postgres**
+- **Supabase Auth** — email/password login with sessions that persist across refresh
+- **Technology watchlist** — track up to 5 stack items, validated against NVD
+- **CVE dashboard** — per-technology carousel with **CVSS severity** badges (critical → low)
+- **Smarter NVD matching** — CPE-aware queries and relevance filtering to reduce false positives
+- **Responsive UI** — works on desktop, tablet, and mobile
+- **REST API** — Express backend with Supabase Postgres
 
 ## Tech stack
 
@@ -35,28 +46,22 @@ flowchart LR
 ## Quick start
 
 1. Clone the repo and run `npm install`.
-2. Copy `.env.example` to `.env` and fill in your keys.
+2. Copy [.env.example](.env.example) to `.env` and add your keys.
 3. Start two terminals:
    - `npm run dev` — Vite frontend (proxies `/api` to port 3000)
    - `npm run server` — Express backend
-4. Open the Vite URL (usually `http://localhost:5173`).
+4. Open the Vite dev URL (usually `http://localhost:5173`).
 
-Full API docs, manual test checklist, and known limitations: [docs/README.md](docs/README.md).
+For API endpoints, manual testing steps, and known limitations, see [docs/README.md](docs/README.md).
 
 ## Environment variables
 
-See [.env.example](.env.example). You need Supabase URL/keys and an [NVD API key](https://nvd.nist.gov/developers/request-an-api-key).
-
-## Screenshots
-
-### Login
-![Vulnerability Tracker login page](docs/screenshots/login.png)
-
-### Dashboard
-![Dashboard showing Node.js CVEs with CVSS severity badges](docs/screenshots/dashboard.png)
-
-### About
-![About page describing the project and tech stack](docs/screenshots/about.png)
+| Variable | Purpose |
+|----------|---------|
+| `VITE_SUPABASE_URL` | Supabase project URL (frontend) |
+| `VITE_SUPABASE_KEY` | Supabase anon key (frontend) |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role (backend) |
+| `NVD_API_KEY` | [NIST NVD API key](https://nvd.nist.gov/developers/request-an-api-key) |
 
 ## Team
 
