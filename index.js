@@ -39,7 +39,7 @@ app.get("/api/watchlist", async (req, res) => {
     }
     res.json(data);
   } catch (error) {
-    res.status(500).json({ message: "Server Failed" });
+    res.status(500).json({ error: "Server failed" });
   }
 });
 
@@ -65,7 +65,6 @@ app.post("/api/watchlist", async (req, res) => {
       .from("watchlist")
       .select("*", { count: "exact", head: true })
       .eq("user_id", userId);
-    //npm run server is no longer working and I think it's because we have created a variable error HERE while also making one on line 64, thus giving me an error.
     if (countError) {
       console.log(countError);
       return res.status(400).json({ error: countError.message });
@@ -133,9 +132,25 @@ app.post("/api/watchlist", async (req, res) => {
     res.json(insertData[0]);
   } catch (error) {
     console.log("Error:", error);
-    res.status(500).json({ message: "Server Failed" });
+    res.status(500).json({ error: "Server failed" });
   }
 });
+
+const RECENT_YEARS = 2;
+
+function filterRecentVulnerabilities(vulnerabilities) {
+  if (!vulnerabilities?.length) return [];
+  const cutoff = new Date();
+  cutoff.setFullYear(cutoff.getFullYear() - RECENT_YEARS);
+
+  const recent = vulnerabilities.filter((entry) => {
+    const published = entry?.cve?.published;
+    if (!published) return false;
+    return new Date(published) >= cutoff;
+  });
+
+  return recent.length > 0 ? recent : vulnerabilities.slice(0, 5);
+}
 
 // ENDPOINT 3: GET Data from the NVD api
 // Borrows the logic from ENDPOINT 1 and 2
@@ -160,10 +175,13 @@ app.get("/api/vulnerabilities", async (req, res) => {
           { headers: { apiKey: NVD_API_KEY } }
         );
         const information = await NVD_Data.json();
+        const vulnerabilities = filterRecentVulnerabilities(
+          information.vulnerabilities
+        );
 
         return {
           tech: row.tech_name,
-          details: information,
+          details: { ...information, vulnerabilities },
         };
       } catch (err) {
         console.log(`Failed fetching NVD data for ${row.tech_name}:`, err);
@@ -179,7 +197,7 @@ app.get("/api/vulnerabilities", async (req, res) => {
     res.json(user_watch_list);
   } catch (error) {
     console.log("Vulnerabilities Endpoint Error:", error);
-    res.status(500).json({ message: "Server Failed" });
+    res.status(500).json({ error: "Server failed" });
   }
 });
 // ENDPOINT 4: Removes a tech from the database nd frontend

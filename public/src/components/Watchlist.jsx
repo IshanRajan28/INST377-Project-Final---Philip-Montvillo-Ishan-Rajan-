@@ -13,6 +13,7 @@ function Watchlist({
   const addToWatchlist = async () => {
     if (!newTech.trim()) return;
     setIsLoading(true);
+    setError("");
     try {
       const response = await fetch("/api/watchlist", {
         method: "POST",
@@ -24,15 +25,14 @@ function Watchlist({
       });
       const result = await response.json();
       if (!response.ok) {
-        setError(result.error);
+        setError(result.error || "Could not add technology.");
       } else {
         setNewTech("");
-        setError("");
         if (refreshWatchlist) {
           await refreshWatchlist();
         }
       }
-    } catch (error) {
+    } catch {
       setError("Network error. Please try again.");
     } finally {
       setIsLoading(false);
@@ -40,68 +40,91 @@ function Watchlist({
   };
 
   const deleteTech = async (techName) => {
+    const displayName = techName.trim();
+    if (
+      !window.confirm(`Remove "${displayName}" from your watchlist?`)
+    ) {
+      return;
+    }
+
     try {
       const response = await fetch(
-        `/api/watchlist?userId=${currentUserId}&tech_name=${techName
-          .trim()
-          .toLowerCase()}`,
+        `/api/watchlist?userId=${currentUserId}&tech_name=${displayName.toLowerCase()}`,
         { method: "DELETE" }
       );
       if (response.ok) {
         setWatchlist(
           watchlist.filter((item) => {
             const currentName = item.tech || item.tech_name;
-            return currentName?.toLowerCase() !== techName.trim().toLowerCase();
+            return currentName?.toLowerCase() !== displayName.toLowerCase();
           })
         );
+        setError("");
+        if (refreshWatchlist) {
+          await refreshWatchlist();
+        }
       } else {
         const result = await response.json();
-        setError(result.error);
+        setError(result.error || "Could not remove technology.");
       }
-    } catch (error) {
-      setError("Server error while deleting");
+    } catch {
+      setError("Server error while deleting. Please try again.");
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addToWatchlist();
     }
   };
 
   return (
-    <div>
+    <div className="watchlist-panel">
+      <label htmlFor="watchlist-input" className="visually-hidden">
+        Add technology to watchlist
+      </label>
       <input
+        id="watchlist-input"
+        className="watchlist-input"
         type="text"
         value={newTech}
         onChange={(change) => setNewTech(change.target.value)}
-        placeholder="Add new technology..."
-        style={{
-          padding: "8px",
-          borderRadius: "4px",
-          border: "1px solid #ccc",
-          marginRight: "8px",
-        }}
+        onKeyDown={handleKeyDown}
+        placeholder="Add technology (e.g. python)"
+        disabled={isLoading}
       />
-      <button onClick={addToWatchlist} disabled={isLoading}>
-        {isLoading ? "Checking NVD Database..." : "Add"}
+      <button
+        type="button"
+        className="watchlist-add-btn"
+        onClick={addToWatchlist}
+        disabled={isLoading}
+      >
+        {isLoading ? "Validating..." : "Add"}
       </button>
 
-      {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
+      {error && (
+        <p className="banner banner-error banner-compact" role="alert">
+          {error}
+        </p>
+      )}
 
-      <ul style={{ marginTop: "20px", listStyle: "none", padding: 0 }}>
+      <ul className="watchlist-items">
         {watchlist.map((item, idx) => {
           const nameToDisplay = item.tech || item.tech_name;
           return (
             <li
               key={item.id || nameToDisplay || idx}
-              style={{ marginBottom: "10px" }}
+              className="watchlist-item"
             >
-              <span
-                style={{ textTransform: "capitalize", marginRight: "10px" }}
+              <span className="watchlist-item-name">{nameToDisplay}</span>
+              <button
+                type="button"
+                className="removeTechButton"
+                onClick={() => deleteTech(nameToDisplay)}
+                aria-label={`Remove ${nameToDisplay} from watchlist`}
               >
-                {nameToDisplay}
-              </span>{" "}
-              <button 
-              type="button"
-              className="removeTechButton"
-              onClick={() => deleteTech(nameToDisplay)}
-              >
-                X
+                Remove
               </button>
             </li>
           );
