@@ -95,6 +95,13 @@ button:focus-visible {
   text-align: center;
 }
 
+.tech-loading {
+  color: var(--color-navy-light);
+  text-align: left;
+  padding: 12px 4px;
+  margin: 0;
+}
+
 .login-container {
   background: var(--color-surface);
   border: none;

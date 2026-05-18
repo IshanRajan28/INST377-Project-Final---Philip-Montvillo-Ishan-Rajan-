@@ -11,8 +11,11 @@ const SWIPER_BREAKPOINTS = {
   1024: { slidesPerView: 3, spaceBetween: 20 },
 };
 
-function WatchlistCarousel({ watchlist }) {
+function WatchlistCarousel({ watchlist, isLoading = false }) {
   if (!watchlist || watchlist.length === 0) {
+    if (isLoading) {
+      return null;
+    }
     return (
       <div className="empty-state">
         <p>Your watchlist is empty.</p>
@@ -35,7 +38,11 @@ function WatchlistCarousel({ watchlist }) {
               <h3>{displayName}</h3>
             </div>
 
-            {vulnerabilities.length === 0 ? (
+            {item.details?.loading ? (
+              <p className="dashboard-loading tech-loading" role="status">
+                Loading CVEs for {displayName}...
+              </p>
+            ) : vulnerabilities.length === 0 ? (
               <p className="empty-state-hint">
                 {item.details?.fetchError
                   ? `Could not reach NVD for ${displayName}. Wait 30 seconds and refresh, or confirm NVD_API_KEY is set on the server.`

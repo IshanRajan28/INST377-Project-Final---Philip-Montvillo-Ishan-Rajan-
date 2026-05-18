@@ -90,11 +90,10 @@ app.post("/api/watchlist", async (req, res) => {
         .json({ error: "You are already tracking this technology!" });
     }
 
-    // Checks if the technology has relevant CVEs in NVD (CPE + filtered keyword)
+    // Quick NVD check (single request — avoid slow double-fetch on add)
     try {
-      const { items, fetchError } = await fetchNvdForTech(cleanTechName);
-
-      if (fetchError || items.length === 0) {
+      const hasMatches = await techHasRelevantCves(cleanTechName);
+      if (!hasMatches) {
         return res.status(400).json({
           error: `"${req.body.tech_name}" has no matching CVEs in NVD. Try a specific product name (e.g. nodejs, python, react).`,
         });
@@ -130,7 +129,8 @@ app.post("/api/watchlist", async (req, res) => {
 const RECENT_YEARS = 2;
 const CVE_LIMIT = 5;
 const NVD_RESULTS_PAGE = 50;
-const NVD_REQUEST_DELAY_MS = 700;
+const NVD_REQUEST_DELAY_MS = 350;
+const NVD_FETCH_RETRIES = 1;
 const NVD_CACHE_TTL_MS = 5 * 60 * 1000;
 const nvdCache = new Map();
 
@@ -295,7 +295,7 @@ function isRateLimitResponse(response, data) {
   return msg.includes("rate limit") || msg.includes("too many requests");
 }
 
-async function requestNvd(url, retries = 2) {
+async function requestNvd(url, retries = NVD_FETCH_RETRIES) {
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
       const response = await fetch(url, { headers: nvdHeaders() });
@@ -398,7 +398,7 @@ async function fetchNvdForTech(techName) {
     keyword,
     rawVulnerabilities
   );
-  if (relevantFromCpe.length >= CVE_LIMIT) {
+  if (relevantFromCpe.length >= 1) {
     const result = sortAndLimitVulnerabilities(relevantFromCpe);
     const payload = {
       items: result.items,
@@ -445,6 +445,18 @@ async function fetchNvdForTech(techName) {
   return payload;
 }
 
+async function techHasRelevantCves(techName) {
+  const keyword = normalizeNvdKeyword(techName);
+  const config = NVD_TECH_CONFIG[keyword];
+  const searchTerm = config?.keywordFallback || keyword;
+  const url =
+    `https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=${encodeURIComponent(searchTerm)}` +
+    `&resultsPerPage=10`;
+  const result = await requestNvd(url);
+  if (result.error) return false;
+  return filterRelevantVulnerabilities(keyword, result.vulnerabilities).length > 0;
+}
+
 // ENDPOINT 3: GET Data from the NVD api
 // Borrows the logic from ENDPOINT 1 and 2
 app.get("/api/vulnerabilities", async (req, res) => {
@@ -460,35 +472,32 @@ app.get("/api/vulnerabilities", async (req, res) => {
       return res.status(400).json({ error: error.message });
     }
 
-    const user_watch_list = [];
+    const rows = data ?? [];
 
-    for (let i = 0; i < data.length; i++) {
-      const row = data[i];
-      try {
-        const { items, showingHistorical, fetchError, noRelevantResults } =
-          await fetchNvdForTech(row.tech_name);
+    const user_watch_list = await Promise.all(
+      rows.map(async (row) => {
+        try {
+          const { items, showingHistorical, fetchError, noRelevantResults } =
+            await fetchNvdForTech(row.tech_name);
 
-        user_watch_list.push({
-          tech: row.tech_name,
-          details: {
-            vulnerabilities: items,
-            showingHistorical,
-            fetchError,
-            noRelevantResults,
-          },
-        });
-      } catch (err) {
-        console.log(`Failed fetching NVD data for ${row.tech_name}:`, err);
-        user_watch_list.push({
-          tech: row.tech_name,
-          details: { vulnerabilities: [], fetchError: true },
-        });
-      }
-
-      if (i < data.length - 1) {
-        await delay(NVD_REQUEST_DELAY_MS);
-      }
-    }
+          return {
+            tech: row.tech_name,
+            details: {
+              vulnerabilities: items,
+              showingHistorical,
+              fetchError,
+              noRelevantResults,
+            },
+          };
+        } catch (err) {
+          console.log(`Failed fetching NVD data for ${row.tech_name}:`, err);
+          return {
+            tech: row.tech_name,
+            details: { vulnerabilities: [], fetchError: true },
+          };
+        }
+      })
+    );
 
     res.json(user_watch_list);
   } catch (error) {
