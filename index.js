@@ -90,19 +90,13 @@ app.post("/api/watchlist", async (req, res) => {
         .json({ error: "You are already tracking this technology!" });
     }
 
-    // Checks if the technology is part of the NVD database
+    // Checks if the technology has relevant CVEs in NVD (CPE + filtered keyword)
     try {
-      const nvdKeyword = normalizeNvdKeyword(cleanTechName);
-      const nvdResponse = await fetch(
-        `https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=${encodeURIComponent(nvdKeyword)}&resultsPerPage=5`,
-        { headers: nvdHeaders() }
-      );
+      const { items, fetchError } = await fetchNvdForTech(cleanTechName);
 
-      const nvdData = await nvdResponse.json();
-
-      if (!nvdData.vulnerabilities || nvdData.vulnerabilities.length === 0) {
+      if (fetchError || items.length === 0) {
         return res.status(400).json({
-          error: `"${req.body.tech_name}" is not a recognized technology with active entries in the NVD database.`,
+          error: `"${req.body.tech_name}" has no matching CVEs in NVD. Try a specific product name (e.g. nodejs, python, react).`,
         });
       }
     } catch (nvdErr) {
@@ -153,8 +147,128 @@ function normalizeNvdKeyword(techName) {
   return aliases[key] || key;
 }
 
+// Prefer CPE-based NVD queries so watchlist results match the actual product
+const NVD_TECH_CONFIG = {
+  nodejs: {
+    cpeName: "cpe:2.3:a:nodejs:node.js:*:*:*:*:*:*:*:*",
+    cpePatterns: [":nodejs:", ":node.js:"],
+    keywordFallback: "nodejs",
+  },
+  python: {
+    cpeName: "cpe:2.3:a:python:python:*:*:*:*:*:*:*:*",
+    cpePatterns: [":python:python", ":python:cpython"],
+    keywordFallback: "python",
+  },
+  react: {
+    cpeName: "cpe:2.3:a:facebook:react:*:*:*:*:*:*:*:*",
+    cpePatterns: [":facebook:react", ":react:"],
+    keywordFallback: "react",
+  },
+  java: {
+    cpeName: "cpe:2.3:a:oracle:jdk:*:*:*:*:*:*:*:*",
+    cpePatterns: [
+      ":oracle:jdk",
+      ":oracle:java",
+      ":oracle:jre",
+      ":sun:jdk",
+      ":sun:jre",
+      ":ibm:java",
+    ],
+    keywordFallback: "oracle jdk",
+  },
+};
+
 function nvdHeaders() {
   return NVD_API_KEY ? { apiKey: NVD_API_KEY } : {};
+}
+
+function collectCpeCriteria(cve) {
+  const criteria = [];
+  const configurations = cve?.configurations || [];
+
+  for (const config of configurations) {
+    for (const node of config.nodes || []) {
+      for (const match of node.cpeMatch || []) {
+        if (match.criteria) criteria.push(match.criteria.toLowerCase());
+      }
+      for (const child of node.children || []) {
+        for (const match of child.cpeMatch || []) {
+          if (match.criteria) criteria.push(match.criteria.toLowerCase());
+        }
+      }
+    }
+  }
+
+  return criteria;
+}
+
+function matchesCpePatterns(cpeCriteria, patterns) {
+  return patterns.some((pattern) =>
+    cpeCriteria.some((cpe) => cpe.includes(pattern.toLowerCase()))
+  );
+}
+
+function isRelevantCve(keyword, entry) {
+  const config = NVD_TECH_CONFIG[keyword];
+  if (!config) return true;
+
+  const cve = entry?.cve;
+  if (!cve) return false;
+
+  const cpeCriteria = collectCpeCriteria(cve);
+  if (
+    cpeCriteria.length > 0 &&
+    matchesCpePatterns(cpeCriteria, config.cpePatterns)
+  ) {
+    return true;
+  }
+
+  const desc = (
+    cve.descriptions?.find((d) => d.lang === "en")?.value || ""
+  ).toLowerCase();
+
+  if (keyword === "nodejs") {
+    const mentionsNode =
+      /\bnode\.?js\b|\bnodejs\b|node\.js/.test(desc) &&
+      /\b(runtime|npm|package|module|driver|sdk|connector)\b/.test(desc);
+    const unrelatedApp =
+      /\btabby\b|terminus|terminal emulator|desktop application|electron app/.test(
+        desc
+      );
+    return mentionsNode && !unrelatedApp;
+  }
+
+  const descPatterns = {
+    python: /\bpython\b(?!\.org)/,
+    react: /\breact(\.js)?\b.*\b(npm|package|library|component|framework)\b|\breact\.js\b/,
+    java: /\b(java|jdk|jre|jvm|openjdk)\b/,
+  };
+
+  return descPatterns[keyword]?.test(desc) ?? false;
+}
+
+function filterRelevantVulnerabilities(keyword, vulnerabilities) {
+  if (!vulnerabilities?.length) return [];
+  return vulnerabilities.filter((entry) => isRelevantCve(keyword, entry));
+}
+
+function dedupeVulnerabilities(vulnerabilities) {
+  const seen = new Set();
+  return (vulnerabilities || []).filter((entry) => {
+    const id = entry?.cve?.id;
+    if (!id || seen.has(id)) return false;
+    seen.add(id);
+    return true;
+  });
+}
+
+async function requestNvd(url) {
+  const response = await fetch(url, { headers: nvdHeaders() });
+  const data = await response.json();
+  if (!response.ok || data.message) {
+    return { vulnerabilities: [], error: true };
+  }
+  return { vulnerabilities: data.vulnerabilities || [], error: false };
 }
 
 function getPublishedTime(entry) {
@@ -206,20 +320,39 @@ function sortAndLimitVulnerabilities(vulnerabilities, limit = CVE_LIMIT) {
 
 async function fetchNvdForTech(techName) {
   const keyword = normalizeNvdKeyword(techName);
-  const encoded = encodeURIComponent(keyword);
-  const url =
-    `https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=${encoded}` +
-    `&resultsPerPage=${NVD_RESULTS_PAGE}`;
+  const config = NVD_TECH_CONFIG[keyword];
+  let vulnerabilities = [];
 
-  const response = await fetch(url, { headers: nvdHeaders() });
-  const data = await response.json();
-
-  if (!response.ok || data.message) {
-    console.log(`NVD error for "${keyword}":`, response.status, data.message || data);
-    return { items: [], showingHistorical: false, fetchError: true };
+  if (config?.cpeName) {
+    const cpeUrl =
+      `https://services.nvd.nist.gov/rest/json/cves/2.0?cpeName=${encodeURIComponent(config.cpeName)}` +
+      `&resultsPerPage=${NVD_RESULTS_PAGE}`;
+    const cpeResult = await requestNvd(cpeUrl);
+    if (!cpeResult.error) {
+      vulnerabilities = cpeResult.vulnerabilities;
+    }
   }
 
-  const result = sortAndLimitVulnerabilities(data.vulnerabilities);
+  if (vulnerabilities.length < CVE_LIMIT) {
+    const searchTerm = config?.keywordFallback || keyword;
+    const keywordUrl =
+      `https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=${encodeURIComponent(searchTerm)}` +
+      `&resultsPerPage=${NVD_RESULTS_PAGE}`;
+    const keywordResult = await requestNvd(keywordUrl);
+    if (!keywordResult.error) {
+      vulnerabilities = dedupeVulnerabilities([
+        ...vulnerabilities,
+        ...keywordResult.vulnerabilities,
+      ]);
+    } else if (vulnerabilities.length === 0) {
+      console.log(`NVD error for "${keyword}"`);
+      return { items: [], showingHistorical: false, fetchError: true };
+    }
+  }
+
+  const relevant = filterRelevantVulnerabilities(keyword, vulnerabilities);
+  const result = sortAndLimitVulnerabilities(relevant);
+
   return {
     items: result.items,
     showingHistorical: result.showingHistorical,

@@ -84,24 +84,26 @@ function Watchlist({
       <label htmlFor="watchlist-input" className="visually-hidden">
         Add technology to watchlist
       </label>
-      <input
-        id="watchlist-input"
-        className="watchlist-input"
-        type="text"
-        value={newTech}
-        onChange={(change) => setNewTech(change.target.value)}
-        onKeyDown={handleKeyDown}
-        placeholder="Add technology (e.g. python)"
-        disabled={isLoading}
-      />
-      <button
-        type="button"
-        className="watchlist-add-btn"
-        onClick={addToWatchlist}
-        disabled={isLoading}
-      >
-        {isLoading ? "Validating..." : "Add"}
-      </button>
+      <div className="watchlist-add-row">
+        <input
+          id="watchlist-input"
+          className="watchlist-input"
+          type="text"
+          value={newTech}
+          onChange={(change) => setNewTech(change.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="e.g. nodejs, python"
+          disabled={isLoading}
+        />
+        <button
+          type="button"
+          className="watchlist-add-btn"
+          onClick={addToWatchlist}
+          disabled={isLoading}
+        >
+          {isLoading ? "..." : "Add"}
+        </button>
+      </div>
 
       {error && (
         <p className="banner banner-error banner-compact" role="alert">
