@@ -137,19 +137,93 @@ app.post("/api/watchlist", async (req, res) => {
 });
 
 const RECENT_YEARS = 2;
+const CVE_LIMIT = 5;
+const NVD_RESULTS_PAGE = 25;
 
-function filterRecentVulnerabilities(vulnerabilities) {
-  if (!vulnerabilities?.length) return [];
-  const cutoff = new Date();
-  cutoff.setFullYear(cutoff.getFullYear() - RECENT_YEARS);
+function nvdPubStartDate(yearsAgo) {
+  const d = new Date();
+  d.setUTCFullYear(d.getUTCFullYear() - yearsAgo);
+  d.setUTCHours(0, 0, 0, 0);
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}T00:00:00.000`;
+}
 
-  const recent = vulnerabilities.filter((entry) => {
-    const published = entry?.cve?.published;
-    if (!published) return false;
-    return new Date(published) >= cutoff;
+function getPublishedTime(entry) {
+  const published = entry?.cve?.published;
+  if (!published) return 0;
+  const time = new Date(published).getTime();
+  return Number.isNaN(time) ? 0 : time;
+}
+
+function sortAndLimitVulnerabilities(vulnerabilities, limit = CVE_LIMIT) {
+  if (!vulnerabilities?.length) {
+    return { items: [], showingHistorical: false };
+  }
+
+  const sorted = [...vulnerabilities].sort(
+    (a, b) => getPublishedTime(b) - getPublishedTime(a)
+  );
+
+  const recentCutoff = new Date();
+  recentCutoff.setFullYear(recentCutoff.getFullYear() - RECENT_YEARS);
+
+  const recent = sorted.filter((entry) => {
+    const time = getPublishedTime(entry);
+    return time > 0 && time >= recentCutoff.getTime();
   });
 
-  return recent.length > 0 ? recent : vulnerabilities.slice(0, 5);
+  if (recent.length > 0) {
+    return { items: recent.slice(0, limit), showingHistorical: false };
+  }
+
+  const extendedCutoff = new Date();
+  extendedCutoff.setFullYear(extendedCutoff.getFullYear() - 5);
+
+  const extended = sorted.filter((entry) => {
+    const time = getPublishedTime(entry);
+    return time > 0 && time >= extendedCutoff.getTime();
+  });
+
+  if (extended.length > 0) {
+    return { items: extended.slice(0, limit), showingHistorical: true };
+  }
+
+  const withDates = sorted.filter((entry) => getPublishedTime(entry) > 0);
+  return {
+    items: (withDates.length > 0 ? withDates : sorted).slice(0, limit),
+    showingHistorical: true,
+  };
+}
+
+async function fetchNvdForTech(techName) {
+  const encoded = encodeURIComponent(techName);
+  const headers = { apiKey: NVD_API_KEY };
+  const recentStart = nvdPubStartDate(RECENT_YEARS);
+
+  const recentUrl =
+    `https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=${encoded}` +
+    `&resultsPerPage=${NVD_RESULTS_PAGE}&pubStartDate=${encodeURIComponent(recentStart)}`;
+
+  const recentResponse = await fetch(recentUrl, { headers });
+  const recentData = await recentResponse.json();
+  let result = sortAndLimitVulnerabilities(recentData.vulnerabilities);
+
+  if (result.items.length > 0) {
+    return result;
+  }
+
+  const broadUrl =
+    `https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=${encoded}` +
+    `&resultsPerPage=50`;
+
+  const broadResponse = await fetch(broadUrl, { headers });
+  const broadData = await broadResponse.json();
+  result = sortAndLimitVulnerabilities(broadData.vulnerabilities);
+
+  return {
+    items: result.items,
+    showingHistorical: result.items.length > 0 ? true : false,
+  };
 }
 
 // ENDPOINT 3: GET Data from the NVD api
@@ -169,19 +243,16 @@ app.get("/api/vulnerabilities", async (req, res) => {
 
     const fetchPromises = data.map(async (row) => {
       try {
-        const convertedName = encodeURIComponent(row.tech_name);
-        const NVD_Data = await fetch(
-          `https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=${convertedName}&resultsPerPage=5`,
-          { headers: { apiKey: NVD_API_KEY } }
-        );
-        const information = await NVD_Data.json();
-        const vulnerabilities = filterRecentVulnerabilities(
-          information.vulnerabilities
+        const { items, showingHistorical } = await fetchNvdForTech(
+          row.tech_name
         );
 
         return {
           tech: row.tech_name,
-          details: { ...information, vulnerabilities },
+          details: {
+            vulnerabilities: items,
+            showingHistorical,
+          },
         };
       } catch (err) {
         console.log(`Failed fetching NVD data for ${row.tech_name}:`, err);

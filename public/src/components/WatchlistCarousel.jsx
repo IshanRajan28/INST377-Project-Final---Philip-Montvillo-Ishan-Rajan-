@@ -37,9 +37,17 @@ function WatchlistCarousel({ watchlist }) {
 
             {vulnerabilities.length === 0 ? (
               <p className="empty-state-hint">
-                No recent CVEs found for {displayName}. Try another keyword.
+                No CVEs found for {displayName}. Try a more specific keyword
+                (e.g. nodejs, python, react).
               </p>
             ) : (
+              <>
+              {item.details?.showingHistorical && (
+                <p className="historical-notice" role="status">
+                  No CVEs from the last 2 years for this keyword. Showing
+                  older NVD results — try a more specific technology name.
+                </p>
+              )}
               <Swiper
                 modules={[Navigation]}
                 navigation
@@ -55,6 +63,7 @@ function WatchlistCarousel({ watchlist }) {
                   );
                 })}
               </Swiper>
+              </>
             )}
           </div>
         );

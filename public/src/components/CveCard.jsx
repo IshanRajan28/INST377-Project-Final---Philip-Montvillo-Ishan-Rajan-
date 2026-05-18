@@ -1,3 +1,20 @@
+function formatPublishedDate(isoString) {
+  if (!isoString || typeof isoString !== "string") {
+    return "Unknown publish date";
+  }
+
+  const date = new Date(isoString);
+  if (Number.isNaN(date.getTime())) {
+    return "Unknown publish date";
+  }
+
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
 function CveCard({ cve, techName }) {
   const cveData = cve?.cve || cve;
   const cveId = cveData?.id || "Unknown CVE";
@@ -10,14 +27,12 @@ function CveCard({ cve, techName }) {
     cveData?.descriptions?.find((item) => item.lang === "en")?.value ||
     "No description available.";
 
-  const publishedDate = cveData?.published
-    ? new Date(cveData.published).toLocaleDateString()
-    : "Unknown publish date";
+  const publishedDate = formatPublishedDate(cveData?.published);
 
   const score =
-    cveData?.metrics?.cvssMetricV31?.[0]?.cvssData?.baseScore ||
-    cveData?.metrics?.cvssMetricV30?.[0]?.cvssData?.baseScore ||
-    cveData?.metrics?.cvssMetricV2?.[0]?.cvssData?.baseScore ||
+    cveData?.metrics?.cvssMetricV31?.[0]?.cvssData?.baseScore ??
+    cveData?.metrics?.cvssMetricV30?.[0]?.cvssData?.baseScore ??
+    cveData?.metrics?.cvssMetricV2?.[0]?.cvssData?.baseScore ??
     null;
 
   let severity = "unknown";

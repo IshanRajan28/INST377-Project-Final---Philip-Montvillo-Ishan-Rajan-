@@ -49,10 +49,11 @@ See [.env.example](.env.example). You need Supabase URL/keys and an [NVD API key
 
 ## Screenshots
 
-Add screenshots to `docs/screenshots/` and link them here:
+| Login | Dashboard | About |
+|-------|-----------|-------|
+| ![Login](docs/screenshots/login.png) | ![Dashboard](docs/screenshots/dashboard.png) | ![About](docs/screenshots/about.png) |
 
-- `docs/screenshots/login.png`
-- `docs/screenshots/dashboard.png`
+Save your captures as `docs/screenshots/login.png`, `dashboard.png`, and `about.png` before pushing (GitHub renders them in the README).
 
 ## Team
 

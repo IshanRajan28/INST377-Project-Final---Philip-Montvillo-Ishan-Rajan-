@@ -592,6 +592,18 @@ button:focus-visible {
   font-weight: 500;
 }
 
+.historical-notice {
+  margin: 0 0 16px;
+  padding: 10px 14px;
+  background: #fff8e6;
+  border: 1px solid #f0d78c;
+  border-radius: var(--radius-sm);
+  color: #7a5c00;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
 /* Swiper */
 .swiper {
   width: 100%;
