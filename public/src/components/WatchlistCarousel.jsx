@@ -37,8 +37,9 @@ function WatchlistCarousel({ watchlist }) {
 
             {vulnerabilities.length === 0 ? (
               <p className="empty-state-hint">
-                No CVEs found for {displayName}. Try a more specific keyword
-                (e.g. nodejs, python, react).
+                {item.details?.fetchError
+                  ? `Could not load CVE data for ${displayName}. The NVD API may be rate-limited — wait a moment and refresh.`
+                  : `No CVEs matched "${displayName}". Try a specific keyword like express, django, spring, or webpack.`}
               </p>
             ) : (
               <>

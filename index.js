@@ -92,13 +92,10 @@ app.post("/api/watchlist", async (req, res) => {
 
     // Checks if the technology is part of the NVD database
     try {
+      const nvdKeyword = normalizeNvdKeyword(cleanTechName);
       const nvdResponse = await fetch(
-        `https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=${cleanTechName}`,
-        {
-          headers: {
-            apiKey: NVD_API_KEY,
-          },
-        }
+        `https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=${encodeURIComponent(nvdKeyword)}&resultsPerPage=5`,
+        { headers: nvdHeaders() }
       );
 
       const nvdData = await nvdResponse.json();
@@ -138,14 +135,26 @@ app.post("/api/watchlist", async (req, res) => {
 
 const RECENT_YEARS = 2;
 const CVE_LIMIT = 5;
-const NVD_RESULTS_PAGE = 25;
+const NVD_RESULTS_PAGE = 50;
+const NVD_REQUEST_DELAY_MS = 400;
 
-function nvdPubStartDate(yearsAgo) {
-  const d = new Date();
-  d.setUTCFullYear(d.getUTCFullYear() - yearsAgo);
-  d.setUTCHours(0, 0, 0, 0);
-  const pad = (n) => String(n).padStart(2, "0");
-  return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}T00:00:00.000`;
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+function normalizeNvdKeyword(techName) {
+  const key = techName.trim().toLowerCase();
+  const aliases = {
+    "node.js": "nodejs",
+    node: "nodejs",
+    "react.js": "react",
+    "reactjs": "react",
+    "vue.js": "vue",
+    "c++": "cpp",
+  };
+  return aliases[key] || key;
+}
+
+function nvdHeaders() {
+  return NVD_API_KEY ? { apiKey: NVD_API_KEY } : {};
 }
 
 function getPublishedTime(entry) {
@@ -196,33 +205,25 @@ function sortAndLimitVulnerabilities(vulnerabilities, limit = CVE_LIMIT) {
 }
 
 async function fetchNvdForTech(techName) {
-  const encoded = encodeURIComponent(techName);
-  const headers = { apiKey: NVD_API_KEY };
-  const recentStart = nvdPubStartDate(RECENT_YEARS);
-
-  const recentUrl =
+  const keyword = normalizeNvdKeyword(techName);
+  const encoded = encodeURIComponent(keyword);
+  const url =
     `https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=${encoded}` +
-    `&resultsPerPage=${NVD_RESULTS_PAGE}&pubStartDate=${encodeURIComponent(recentStart)}`;
+    `&resultsPerPage=${NVD_RESULTS_PAGE}`;
 
-  const recentResponse = await fetch(recentUrl, { headers });
-  const recentData = await recentResponse.json();
-  let result = sortAndLimitVulnerabilities(recentData.vulnerabilities);
+  const response = await fetch(url, { headers: nvdHeaders() });
+  const data = await response.json();
 
-  if (result.items.length > 0) {
-    return result;
+  if (!response.ok || data.message) {
+    console.log(`NVD error for "${keyword}":`, response.status, data.message || data);
+    return { items: [], showingHistorical: false, fetchError: true };
   }
 
-  const broadUrl =
-    `https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=${encoded}` +
-    `&resultsPerPage=50`;
-
-  const broadResponse = await fetch(broadUrl, { headers });
-  const broadData = await broadResponse.json();
-  result = sortAndLimitVulnerabilities(broadData.vulnerabilities);
-
+  const result = sortAndLimitVulnerabilities(data.vulnerabilities);
   return {
     items: result.items,
-    showingHistorical: result.items.length > 0 ? true : false,
+    showingHistorical: result.showingHistorical,
+    fetchError: false,
   };
 }
 
@@ -241,29 +242,35 @@ app.get("/api/vulnerabilities", async (req, res) => {
       return res.status(400).json({ error: error.message });
     }
 
-    const fetchPromises = data.map(async (row) => {
+    const user_watch_list = [];
+
+    for (let i = 0; i < data.length; i++) {
+      const row = data[i];
       try {
-        const { items, showingHistorical } = await fetchNvdForTech(
+        const { items, showingHistorical, fetchError } = await fetchNvdForTech(
           row.tech_name
         );
 
-        return {
+        user_watch_list.push({
           tech: row.tech_name,
           details: {
             vulnerabilities: items,
             showingHistorical,
+            fetchError,
           },
-        };
+        });
       } catch (err) {
         console.log(`Failed fetching NVD data for ${row.tech_name}:`, err);
-        return {
+        user_watch_list.push({
           tech: row.tech_name,
-          details: { vulnerabilities: [] },
-        };
+          details: { vulnerabilities: [], fetchError: true },
+        });
       }
-    });
 
-    const user_watch_list = await Promise.all(fetchPromises);
+      if (i < data.length - 1) {
+        await delay(NVD_REQUEST_DELAY_MS);
+      }
+    }
 
     res.json(user_watch_list);
   } catch (error) {
