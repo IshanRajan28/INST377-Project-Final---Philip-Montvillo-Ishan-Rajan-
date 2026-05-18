@@ -114,6 +114,7 @@ button:focus-visible {
   text-align: center;
   letter-spacing: 0.2px;
   font-weight: 700;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
 .login-container form {
@@ -335,6 +336,7 @@ button:focus-visible {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   padding-bottom: 4px;
+  overflow: hidden;
 }
 
 .aboutCard h1 {
@@ -346,6 +348,7 @@ button:focus-visible {
   text-align: center;
   letter-spacing: 0.4px;
   font-weight: 700;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
 .aboutSection {
