@@ -49,11 +49,14 @@ See [.env.example](.env.example). You need Supabase URL/keys and an [NVD API key
 
 ## Screenshots
 
-| Login | Dashboard | About |
-|-------|-----------|-------|
-| ![Login](docs/screenshots/login.png) | ![Dashboard](docs/screenshots/dashboard.png) | ![About](docs/screenshots/about.png) |
+### Login
+![Vulnerability Tracker login page](docs/screenshots/login.png)
 
-Save your captures as `docs/screenshots/login.png`, `dashboard.png`, and `about.png` before pushing (GitHub renders them in the README).
+### Dashboard
+![Dashboard showing Node.js CVEs with CVSS severity badges](docs/screenshots/dashboard.png)
+
+### About
+![About page describing the project and tech stack](docs/screenshots/about.png)
 
 ## Team
 
