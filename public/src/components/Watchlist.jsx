@@ -81,6 +81,7 @@ function Watchlist({
 
   return (
     <div className="watchlist-panel">
+      <div className="watchlist-add-panel">
       <label htmlFor="watchlist-input" className="visually-hidden">
         Add technology to watchlist
       </label>
@@ -110,6 +111,7 @@ function Watchlist({
           {error}
         </p>
       )}
+      </div>
 
       <ul className="watchlist-items">
         {watchlist.map((item, idx) => {

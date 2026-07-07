@@ -44,13 +44,18 @@ function WatchlistCarousel({ watchlist, isLoading = false }) {
                 Loading CVEs for {displayName}...
               </p>
             ) : vulnerabilities.length === 0 ? (
-              <p className="empty-state-hint">
+              <div
+                className={`cve-empty-notice${item.details?.fetchError ? " cve-empty-notice--error" : ""}`}
+                role="status"
+              >
+                <p>
                 {item.details?.fetchError
                   ? `Could not reach NVD for ${displayName}. Wait 30 seconds and refresh, or confirm NVD_API_KEY is set on the server.`
                   : item.details?.noRelevantResults
                     ? `NVD returned results for "${displayName}", but none matched this product after filtering. Try nodejs, python, or react.`
                     : `No CVEs found for ${displayName}. Try nodejs, python, react, or express.`}
-              </p>
+                </p>
+              </div>
             ) : (
               <>
               {item.details?.showingHistorical && (

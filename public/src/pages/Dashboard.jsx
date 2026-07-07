@@ -113,8 +113,11 @@ function Dashboard({ currentUserId, userEmail, onLogout, onShowAbout }) {
         </section>
 
         <section className="dashboardThreats" aria-label="Active threats">
-          <h2 className="panelTitle panelTitle-threats">Active Threats</h2>
+          <header className="dashboardThreats-header">
+            <h2>Active Threats</h2>
+          </header>
 
+          <div className="dashboardThreats-content">
           {error && (
             <p className="banner banner-error" role="alert">
               {error}
@@ -131,6 +134,7 @@ function Dashboard({ currentUserId, userEmail, onLogout, onShowAbout }) {
             watchlist={watchlist}
             isLoading={isLoadingCves}
           />
+          </div>
         </section>
       </div>
     </main>
