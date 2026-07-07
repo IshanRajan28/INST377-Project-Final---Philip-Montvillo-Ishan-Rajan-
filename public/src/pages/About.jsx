@@ -21,7 +21,7 @@ function About({ goBackToLogin, backButtonText = "Back to sign in" }) {
         </div>
 
         <div className="aboutSection">
-          <p className="aboutSection-eyebrow">The problem</p>
+          <p className="aboutSection-eyebrow">The Problem</p>
           <h2>Too much signal, not enough relevance</h2>
           <p>
             Developers and DevOps teams face information overload when scanning
@@ -32,7 +32,7 @@ function About({ goBackToLogin, backButtonText = "Back to sign in" }) {
         </div>
 
         <div className="aboutSection">
-          <p className="aboutSection-eyebrow">The approach</p>
+          <p className="aboutSection-eyebrow">The Approach</p>
           <h2>Watchlist-driven threat feed</h2>
           <p>
             Your watchlist lives in Supabase and persists between sessions. The

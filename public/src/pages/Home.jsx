@@ -2,83 +2,187 @@
 
 import "../App.css";
 import { useState, useEffect } from "react";
-import { createClient } from "@supabase/supabase-js";
 import About from "./About";
 import Dashboard from "./Dashboard";
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_KEY
-);
+import { supabase } from "../lib/supabaseClient";
+import {
+  validateAuthInput,
+  formatAuthError,
+  getSignUpResultMessage,
+} from "../lib/authHelpers";
 
 function LoginPage() {
   const [showAbout, setShowAbout] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [authReady, setAuthReady] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [authAction, setAuthAction] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
+  const isLoading = authAction !== null;
+
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        setCurrentUser(session.user);
+    let isMounted = true;
+
+    const initAuth = async () => {
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error("Failed to restore session:", error.message);
+        } else if (isMounted && data.session?.user) {
+          setCurrentUser(data.session.user);
+        }
+      } catch {
+        if (isMounted) {
+          setErrorMessage(
+            "Could not connect to authentication. Check your connection and try again."
+          );
+        }
+      } finally {
+        if (isMounted) {
+          setAuthReady(true);
+        }
       }
-      setAuthReady(true);
-    });
+    };
+
+    initAuth();
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!isMounted) return;
       setCurrentUser(session?.user ?? null);
+      if (session?.user) {
+        setErrorMessage("");
+        setSuccessMessage("");
+      }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
-  const handleLogin = async (login) => {
-    login.preventDefault();
-    setLoading(true);
+  const clearAuthFeedback = () => {
     setErrorMessage("");
     setSuccessMessage("");
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    });
-    if (error) {
-      setErrorMessage(error.message);
-    } else if (data.user) {
-      setCurrentUser(data.user);
-    }
-    setLoading(false);
   };
 
-  const handleSignUp = async (SignUp) => {
-    SignUp.preventDefault();
-    setLoading(true);
-    setErrorMessage("");
-    setSuccessMessage("");
-    const { data, error } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-    });
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+    clearAuthFeedback();
+  };
 
-    if (error) {
-      setErrorMessage(error.message);
-    } else if (data.user) {
-      setSuccessMessage("Check your email for a confirmation link!");
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+    clearAuthFeedback();
+  };
+
+  const resetAuthForm = () => {
+    setEmail("");
+    setPassword("");
+    clearAuthFeedback();
+  };
+
+  const handleLogin = async (event) => {
+    event.preventDefault();
+
+    const validation = validateAuthInput(email, password);
+    if (!validation.ok) {
+      setErrorMessage(validation.message);
+      setSuccessMessage("");
+      return;
     }
-    setLoading(false);
+
+    setAuthAction("signIn");
+    clearAuthFeedback();
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: validation.email,
+        password,
+      });
+
+      if (error) {
+        setErrorMessage(formatAuthError(error));
+        return;
+      }
+
+      if (data.user) {
+        setCurrentUser(data.user);
+        resetAuthForm();
+      }
+    } catch {
+      setErrorMessage(
+        "Could not sign in. Check your connection and try again."
+      );
+    } finally {
+      setAuthAction(null);
+    }
+  };
+
+  const handleSignUp = async () => {
+    const validation = validateAuthInput(email, password, { forSignUp: true });
+    if (!validation.ok) {
+      setErrorMessage(validation.message);
+      setSuccessMessage("");
+      return;
+    }
+
+    setAuthAction("signUp");
+    clearAuthFeedback();
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: validation.email,
+        password,
+      });
+
+      if (error) {
+        setErrorMessage(formatAuthError(error));
+        return;
+      }
+
+      const result = getSignUpResultMessage(data);
+      if (result.type === "error") {
+        setErrorMessage(result.message);
+        return;
+      }
+
+      setSuccessMessage(result.message);
+      setPassword("");
+
+      if (data.session?.user) {
+        setCurrentUser(data.session.user);
+        resetAuthForm();
+      }
+    } catch {
+      setErrorMessage(
+        "Could not create account. Check your connection and try again."
+      );
+    } finally {
+      setAuthAction(null);
+    }
   };
 
   const logout = async () => {
-    await supabase.auth.signOut();
-    setCurrentUser(null);
-    setShowAbout(false);
-    setErrorMessage("");
-    setSuccessMessage("");
+    setAuthAction("signOut");
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error("Sign out failed:", error.message);
+      }
+    } catch {
+      console.error("Sign out failed due to a network error.");
+    } finally {
+      setCurrentUser(null);
+      setShowAbout(false);
+      resetAuthForm();
+      setAuthAction(null);
+    }
   };
 
   if (!authReady) {
@@ -113,28 +217,23 @@ function LoginPage() {
 
   return (
     <div className="loginPageLayout">
-      <header className="login-hero">
-        <p className="login-eyebrow">NVD-powered monitoring</p>
-        <h1 className="login-heroTitle">Know what threatens your stack</h1>
-        <p className="login-heroText">
-          Build a watchlist of the technologies you run. See matching CVEs from
-          the National Vulnerability Database in one place.
-        </p>
-      </header>
-
       <div className="login-container">
-        <div className="login-container-header">
-          <h1>Sign in</h1>
-          <p>Secure access to your watchlist</p>
-        </div>
-        <form onSubmit={handleLogin}>
+        <header className="login-container-header">
+          <h1 className="login-heroTitle">Know what threatens your stack</h1>
+          <p className="login-heroText">
+            Track CVEs from the National Vulnerability Database for the
+            technologies you actually run.
+          </p>
+        </header>
+        <form onSubmit={handleLogin} noValidate>
           <label htmlFor="login-email">Email</label>
           <input
             id="login-email"
             type="email"
             autoComplete="email"
             value={email}
-            onChange={(change) => setEmail(change.target.value)}
+            onChange={handleEmailChange}
+            disabled={isLoading}
             required
           />
 
@@ -144,7 +243,9 @@ function LoginPage() {
             type="password"
             autoComplete="current-password"
             value={password}
-            onChange={(change) => setPassword(change.target.value)}
+            onChange={handlePasswordChange}
+            disabled={isLoading}
+            minLength={6}
             required
           />
 
@@ -159,25 +260,23 @@ function LoginPage() {
             </p>
           )}
 
-          <button type="submit" disabled={loading} className="login-button">
-            {loading ? "Signing in..." : "Sign in"}
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="login-button"
+            aria-busy={authAction === "signIn"}
+          >
+            {authAction === "signIn" ? "Signing in..." : "Sign in"}
           </button>
 
           <button
             type="button"
-            disabled={loading}
+            disabled={isLoading}
             onClick={handleSignUp}
             className="signup-button"
+            aria-busy={authAction === "signUp"}
           >
-            Create account
-          </button>
-
-          <button
-            type="button"
-            className="aboutButton"
-            onClick={() => setShowAbout(true)}
-          >
-            How this works
+            {authAction === "signUp" ? "Creating account..." : "Create account"}
           </button>
 
           <p className="message-text">
@@ -185,6 +284,15 @@ function LoginPage() {
           </p>
         </form>
       </div>
+
+      <button
+        type="button"
+        className="textLink-button"
+        onClick={() => setShowAbout(true)}
+        disabled={isLoading}
+      >
+        How this works
+      </button>
     </div>
   );
 }

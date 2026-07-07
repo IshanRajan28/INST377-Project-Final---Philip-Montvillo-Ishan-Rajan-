@@ -101,7 +101,7 @@ function Dashboard({ currentUserId, userEmail, onLogout, onShowAbout }) {
 
           <button
             type="button"
-            className="dashboardAbout"
+            className="textLink-button dashboardAbout"
             onClick={onShowAbout}
           >
             How this works
