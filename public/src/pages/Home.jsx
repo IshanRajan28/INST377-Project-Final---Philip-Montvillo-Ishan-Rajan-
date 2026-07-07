@@ -95,7 +95,7 @@ function LoginPage() {
     return (
       <About
         goBackToLogin={() => setShowAbout(false)}
-        backButtonText={currentUser ? "Back to Dashboard" : "Back to Login"}
+        backButtonText={currentUser ? "Back to dashboard" : "Back to sign in"}
       />
     );
   }
@@ -113,8 +113,20 @@ function LoginPage() {
 
   return (
     <div className="loginPageLayout">
+      <header className="login-hero">
+        <p className="login-eyebrow">NVD-powered monitoring</p>
+        <h1 className="login-heroTitle">Know what threatens your stack</h1>
+        <p className="login-heroText">
+          Build a watchlist of the technologies you run. See matching CVEs from
+          the National Vulnerability Database in one place.
+        </p>
+      </header>
+
       <div className="login-container">
-        <h1>Vulnerability Tracker</h1>
+        <div className="login-container-header">
+          <h1>Sign in</h1>
+          <p>Secure access to your watchlist</p>
+        </div>
         <form onSubmit={handleLogin}>
           <label htmlFor="login-email">Email</label>
           <input
@@ -148,7 +160,7 @@ function LoginPage() {
           )}
 
           <button type="submit" disabled={loading} className="login-button">
-            {loading ? "Signing in..." : "Login"}
+            {loading ? "Signing in..." : "Sign in"}
           </button>
 
           <button
@@ -157,7 +169,7 @@ function LoginPage() {
             onClick={handleSignUp}
             className="signup-button"
           >
-            Sign Up
+            Create account
           </button>
 
           <button
@@ -165,11 +177,11 @@ function LoginPage() {
             className="aboutButton"
             onClick={() => setShowAbout(true)}
           >
-            About This Project
+            How this works
           </button>
 
           <p className="message-text">
-            New accounts receive a confirmation email after signing up.
+            New accounts need email confirmation before you can sign in.
           </p>
         </form>
       </div>

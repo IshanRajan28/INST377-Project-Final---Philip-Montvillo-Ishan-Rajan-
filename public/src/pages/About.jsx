@@ -1,60 +1,67 @@
-// This'll be that static about page where we explain the purposes of the vulnerability tracking app. 
-function About({ goBackToLogin, backButtonText = "Back to Login Page" }) {
+function About({ goBackToLogin, backButtonText = "Back to sign in" }) {
   return (
     <main className="aboutPage">
       <section className="aboutCard">
-        <h1>About This Project</h1>
+        <header className="aboutCard-header">
+          <h1>How this works</h1>
+          <p>
+            A focused view of CVEs that match the technologies in your
+            development stack — pulled from the National Vulnerability Database.
+          </p>
+        </header>
 
+        <div className="aboutSection">
+          <p className="aboutSection-eyebrow">Overview</p>
+          <p>
+            Vulnerability databases hold thousands of CVEs across every
+            technology imaginable. This app narrows that noise: you pick what you
+            run, and the dashboard surfaces advisories that actually apply to
+            your stack.
+          </p>
+        </div>
 
-      <div className="aboutSection">
-        <p>
-          This vulnerability tracking app helps users monitor security threats that are 
-          connected to the technologies they actually care about. Instead of having to manually 
-          search through large vulnerability databases, users can build a watchlist and view 
-          any relevant CVE information in one place!
-        </p>
-      </div>
+        <div className="aboutSection">
+          <p className="aboutSection-eyebrow">The problem</p>
+          <h2>Too much signal, not enough relevance</h2>
+          <p>
+            Developers and DevOps teams face information overload when scanning
+            raw CVE feeds. Most entries do not touch the frameworks, runtimes, or
+            libraries they deploy. Finding what matters means filtering through
+            noise by hand.
+          </p>
+        </div>
 
+        <div className="aboutSection">
+          <p className="aboutSection-eyebrow">The approach</p>
+          <h2>Watchlist-driven threat feed</h2>
+          <p>
+            Your watchlist lives in Supabase and persists between sessions. The
+            backend queries the NVD API for each technology you track, then the
+            dashboard groups results by stack item — severity, description, and
+            publish date in one scrollable feed.
+          </p>
+        </div>
 
-      <div className="aboutSection">
-        <h2>The Problem</h2>
+        <div className="aboutSection">
+          <p className="aboutSection-eyebrow">Stack</p>
+          <h2>Built with</h2>
+          <ul>
+            <li>React for the interface</li>
+            <li>Node.js and Express for API routes</li>
+            <li>Supabase for authentication and watchlist storage</li>
+            <li>NVD API for CVE data</li>
+          </ul>
+        </div>
 
-        <p>
-            Cybersecurity information can be difficult to sift through as vulnerability databases
-            often contain thousands of CVEs across many different technologies. This can lead to 
-            information overload for respective developers and DevOps teams and make it difficult
-            to find threats that actually apply to stacks/technologies that they use. 
-        </p>
-      </div>
-
-      <div className ="aboutSection">
-        <h2>Our Solution</h2>
-
-        <p>
-            Our app will let users create a persistent watchlist using Supabase. The backend then uses 
-            these saved technologies to request vulnerability information from the National 
-            Vulnerability Database (NVD). This allows the dashboard to show a curated list of CVEs that
-            are relevant to the user and their selected technologies. 
-        </p>
-      </div>
-
-      <div className="aboutSection">
-        <h2>Technologies Used</h2>
-
-        <ul>
-            <li>React helped us build the frontend interface.</li>
-            <li>Node.js and Express are used to create backend API routes.</li>
-            <li>Supabase is used to store user watchlist data.</li>
-            <li>The NVD Database API is used to retrieve CVE information.</li>
-        </ul>
-      </div>
-
-        <button 
-        type="button"
-        className="backToLoginButton" 
-        onClick={goBackToLogin}>
-          {backButtonText}
-        </button>
+        <footer className="aboutCard-footer">
+          <button
+            type="button"
+            className="backToLoginButton"
+            onClick={goBackToLogin}
+          >
+            {backButtonText}
+          </button>
+        </footer>
       </section>
     </main>
   );

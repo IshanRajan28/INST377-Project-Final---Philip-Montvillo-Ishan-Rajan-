@@ -104,7 +104,7 @@ function Dashboard({ currentUserId, userEmail, onLogout, onShowAbout }) {
             className="dashboardAbout"
             onClick={onShowAbout}
           >
-            About This Project
+            How this works
           </button>
 
           <button type="button" className="dashboardLogout" onClick={onLogout}>
@@ -123,7 +123,7 @@ function Dashboard({ currentUserId, userEmail, onLogout, onShowAbout }) {
 
           {isLoadingCves && (
             <p className="dashboard-loading" role="status">
-              Loading vulnerabilities from NVD...
+              Fetching CVEs from the National Vulnerability Database…
             </p>
           )}
 

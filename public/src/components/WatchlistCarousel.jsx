@@ -18,9 +18,10 @@ function WatchlistCarousel({ watchlist, isLoading = false }) {
     }
     return (
       <div className="empty-state">
-        <p>Your watchlist is empty.</p>
+        <p>No technologies on your watchlist yet</p>
         <p className="empty-state-hint">
-          Add a technology on the left to see CVEs from the NVD database.
+          Add a stack item in the sidebar — try nodejs, python, or react — to
+          load matching advisories.
         </p>
       </div>
     );
