@@ -219,10 +219,10 @@ function LoginPage() {
     <div className="loginPageLayout">
       <div className="login-container">
         <header className="login-container-header">
-          <h1 className="login-heroTitle">Know what threatens your stack</h1>
+          <p className="login-eyebrow">National Vulnerability Database</p>
+          <h1 className="login-heroTitle">CVE feed for your stack</h1>
           <p className="login-heroText">
-            Track CVEs from the National Vulnerability Database for the
-            technologies you actually run.
+            Sign in to track technologies and read matching advisories.
           </p>
         </header>
         <form onSubmit={handleLogin} noValidate>

@@ -15,7 +15,7 @@ function formatPublishedDate(isoString) {
   });
 }
 
-function CveCard({ cve, techName }) {
+function CveCard({ cve }) {
   const cveData = cve?.cve || cve;
   const cveId = cveData?.id || "Unknown CVE";
   const nvdUrl =
@@ -50,7 +50,6 @@ function CveCard({ cve, techName }) {
 
   return (
     <article className={`cveCard ${severity}`}>
-      <span className="techLabel">{techName}</span>
       <div className="cveCardHeader">
         <h4 className="cveCardId">
           {nvdUrl ? (
@@ -76,7 +75,7 @@ function CveCard({ cve, techName }) {
 
       <p className="cveDescription">{description}</p>
 
-      <small className="cvePublished">Published: {publishedDate}</small>
+      <small className="cvePublished">Published · {publishedDate}</small>
     </article>
   );
 }

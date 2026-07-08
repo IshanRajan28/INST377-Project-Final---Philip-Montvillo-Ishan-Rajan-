@@ -18,10 +18,9 @@ function WatchlistCarousel({ watchlist, isLoading = false }) {
     }
     return (
       <div className="empty-state">
-        <p>No technologies on your watchlist yet</p>
+        <p>Add a technology to your stack</p>
         <p className="empty-state-hint">
-          Add a stack item in the sidebar — try nodejs, python, or react — to
-          load matching advisories.
+          Use the sidebar to track something like nodejs, python, or react.
         </p>
       </div>
     );
@@ -74,7 +73,7 @@ function WatchlistCarousel({ watchlist, isLoading = false }) {
 
                   return (
                     <SwiperSlide key={cveData?.id || bugIndex}>
-                      <CveCard cve={cveData} techName={displayName} />
+                      <CveCard cve={cveData} />
                     </SwiperSlide>
                   );
                 })}

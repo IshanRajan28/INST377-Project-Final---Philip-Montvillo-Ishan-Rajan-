@@ -89,8 +89,8 @@ function Dashboard({ currentUserId, userEmail, onLogout, onShowAbout }) {
       </header>
 
       <div className="dashboardColumns">
-        <section className="dashboardWatchlist" aria-label="Watchlist">
-          <h2 className="panelTitle">Watchlist</h2>
+        <section className="dashboardWatchlist" aria-label="Your stack">
+          <h2 className="panelTitle">Your stack</h2>
 
           <Watchlist
             currentUserId={currentUserId}
@@ -112,9 +112,10 @@ function Dashboard({ currentUserId, userEmail, onLogout, onShowAbout }) {
           </button>
         </section>
 
-        <section className="dashboardThreats" aria-label="Active threats">
+        <section className="dashboardThreats" aria-label="Advisories">
           <header className="dashboardThreats-header">
-            <h2>Active Threats</h2>
+            <h2>Advisories</h2>
+            <p>CVEs from NVD matched to your stack</p>
           </header>
 
           <div className="dashboardThreats-content">
@@ -126,7 +127,7 @@ function Dashboard({ currentUserId, userEmail, onLogout, onShowAbout }) {
 
           {isLoadingCves && (
             <p className="dashboard-loading" role="status">
-              Fetching CVEs from the National Vulnerability Database…
+              Loading advisories from NVD…
             </p>
           )}
 

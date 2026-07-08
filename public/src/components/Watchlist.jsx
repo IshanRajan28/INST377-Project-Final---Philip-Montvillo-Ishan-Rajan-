@@ -93,7 +93,7 @@ function Watchlist({
           value={newTech}
           onChange={(change) => setNewTech(change.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="e.g. nodejs, python"
+          placeholder="nodejs, python, react"
           disabled={isLoading}
         />
         <button

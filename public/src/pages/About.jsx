@@ -6,12 +6,11 @@ function About({ goBackToLogin, backButtonText = "Back to sign in" }) {
           <h1>How this works</h1>
           <p>
             A focused view of CVEs that match the technologies in your
-            development stack — pulled from the National Vulnerability Database.
+            development stack, pulled from the National Vulnerability Database.
           </p>
         </header>
 
         <div className="aboutSection">
-          <p className="aboutSection-eyebrow">Overview</p>
           <p>
             Vulnerability databases hold thousands of CVEs across every
             technology imaginable. This app narrows that noise: you pick what you
@@ -21,8 +20,7 @@ function About({ goBackToLogin, backButtonText = "Back to sign in" }) {
         </div>
 
         <div className="aboutSection">
-          <p className="aboutSection-eyebrow">The Problem</p>
-          <h2>Too much signal, not enough relevance</h2>
+          <h2>The problem</h2>
           <p>
             Developers and DevOps teams face information overload when scanning
             raw CVE feeds. Most entries do not touch the frameworks, runtimes, or
@@ -32,18 +30,15 @@ function About({ goBackToLogin, backButtonText = "Back to sign in" }) {
         </div>
 
         <div className="aboutSection">
-          <p className="aboutSection-eyebrow">The Approach</p>
-          <h2>Watchlist-driven threat feed</h2>
+          <h2>The approach</h2>
           <p>
-            Your watchlist lives in Supabase and persists between sessions. The
-            backend queries the NVD API for each technology you track, then the
-            dashboard groups results by stack item — severity, description, and
-            publish date in one scrollable feed.
+            Your watchlist persists between sessions. The app queries the NVD
+            API for each technology you track, then groups results by stack
+            item: severity, description, and publish date in one feed.
           </p>
         </div>
 
         <div className="aboutSection">
-          <p className="aboutSection-eyebrow">Stack</p>
           <h2>Built with</h2>
           <ul>
             <li>React for the interface</li>
