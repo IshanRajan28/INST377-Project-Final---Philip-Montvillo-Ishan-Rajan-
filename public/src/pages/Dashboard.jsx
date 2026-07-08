@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Watchlist from "../components/Watchlist";
 import WatchlistCarousel from "../components/WatchlistCarousel";
 
@@ -73,6 +73,23 @@ function Dashboard({ currentUserId, userEmail, onLogout, onShowAbout }) {
     await fetchVulnerabilities();
   }, [fetchVulnerabilities]);
 
+  const dashboardStats = useMemo(() => {
+    const advisories = watchlist.reduce((sum, item) => {
+      if (item.details?.loading) return sum;
+      return sum + (item.details?.vulnerabilities?.length ?? 0);
+    }, 0);
+
+    return {
+      technologies: watchlist.length,
+      advisories,
+    };
+  }, [watchlist]);
+
+  const showDashboardStats =
+    watchlist.length > 0 &&
+    !isLoadingCves &&
+    !watchlist.some((item) => item.details?.loading);
+
   if (!currentUserId) {
     return (
       <p className="dashboard-message">Please log in to view your dashboard.</p>
@@ -82,9 +99,32 @@ function Dashboard({ currentUserId, userEmail, onLogout, onShowAbout }) {
   return (
     <main className="dashboardLayout">
       <header className="dashboardTopBar">
-        <div className="dashboardBrand">
-          <h1 className="dashboardAppTitle">Vulnerability Tracker</h1>
-          {userEmail && <p className="dashboardUserEmail">{userEmail}</p>}
+        <div className="dashboardTopBar-inner">
+          <div className="dashboardBrand">
+            <div className="dashboardBrand-text">
+              <p className="dashboardEyebrow">NVD advisory feed</p>
+              <h1 className="dashboardAppTitle">Vulnerability Tracker</h1>
+            </div>
+            {userEmail && <p className="dashboardUserEmail">{userEmail}</p>}
+          </div>
+
+          {showDashboardStats && (
+            <div className="dashboardStats" aria-label="Dashboard summary">
+              <div className="dashboardStat">
+                <span className="dashboardStat-value">
+                  {dashboardStats.technologies}
+                </span>
+                <span className="dashboardStat-label">technologies</span>
+              </div>
+              <span className="dashboardStat-divider" aria-hidden="true" />
+              <div className="dashboardStat">
+                <span className="dashboardStat-value">
+                  {dashboardStats.advisories}
+                </span>
+                <span className="dashboardStat-label">advisories</span>
+              </div>
+            </div>
+          )}
         </div>
       </header>
 
@@ -114,8 +154,16 @@ function Dashboard({ currentUserId, userEmail, onLogout, onShowAbout }) {
 
         <section className="dashboardThreats" aria-label="Advisories">
           <header className="dashboardThreats-header">
-            <h2>Advisories</h2>
-            <p>CVEs from NVD matched to your stack</p>
+            <div className="dashboardThreats-headerText">
+              <h2>Advisories</h2>
+              <p>CVEs from NVD matched to your stack</p>
+            </div>
+            {showDashboardStats && (
+              <p className="dashboardThreats-summary" aria-live="polite">
+                {dashboardStats.advisories} total across{" "}
+                {dashboardStats.technologies} stack items
+              </p>
+            )}
           </header>
 
           <div className="dashboardThreats-content">

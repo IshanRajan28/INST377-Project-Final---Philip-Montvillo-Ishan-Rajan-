@@ -150,7 +150,7 @@ function Watchlist({
                 onClick={() => deleteTech(nameToDisplay)}
                 aria-label={`Remove ${nameToDisplay} from watchlist`}
               >
-                Remove
+                <span aria-hidden="true">×</span>
               </button>
             </li>
           );

@@ -35,7 +35,26 @@ function WatchlistCarousel({ watchlist, isLoading = false }) {
         return (
           <div key={item.id || displayName || index} className="techRow">
             <div className="techRowHeader">
-              <h3>{displayName}</h3>
+              <div className="techRowHeader-main">
+                <span className="techRowIndex">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <h3>{displayName}</h3>
+                {item.details?.showingHistorical && (
+                  <span
+                    className="techRowTag techRowTag--historical"
+                    title="No CVEs from the last 2 years for this keyword. Showing older NVD results."
+                  >
+                    Older results
+                  </span>
+                )}
+              </div>
+              {!item.details?.loading && vulnerabilities.length > 0 && (
+                <span className="techRowMeta">
+                  {vulnerabilities.length} CVE
+                  {vulnerabilities.length === 1 ? "" : "s"}
+                </span>
+              )}
             </div>
 
             {item.details?.loading ? (
@@ -65,13 +84,6 @@ function WatchlistCarousel({ watchlist, isLoading = false }) {
                 </p>
               </div>
             ) : (
-              <>
-              {item.details?.showingHistorical && (
-                <p className="historical-notice" role="status">
-                  No CVEs from the last 2 years for this keyword. Showing
-                  older NVD results — try a more specific technology name.
-                </p>
-              )}
               <Swiper
                 modules={[Navigation]}
                 navigation
@@ -93,7 +105,6 @@ function WatchlistCarousel({ watchlist, isLoading = false }) {
                   );
                 })}
               </Swiper>
-              </>
             )}
           </div>
         );

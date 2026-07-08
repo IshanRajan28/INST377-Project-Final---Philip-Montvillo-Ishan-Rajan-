@@ -3,6 +3,7 @@ function About({ goBackToLogin, backButtonText = "Back to sign in" }) {
     <main className="aboutPage">
       <section className="aboutCard">
         <header className="aboutCard-header">
+          <p className="aboutEyebrow">Vulnerability Tracker</p>
           <h1>How this works</h1>
           <p>
             Pick the technologies you run. Vulnerability Tracker queries NIST
