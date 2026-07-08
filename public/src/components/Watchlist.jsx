@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { formatTechDisplayName, normalizeTechName } from "../lib/techHelpers";
+import { formatTechDisplayName, normalizeTechName, QUICK_TECH_EXAMPLES, QUICK_TECH_OR_HINT } from "../lib/techHelpers";
 
-const QUICK_TECH = ["node.js", "python", "react"];
+const QUICK_TECH = QUICK_TECH_EXAMPLES;
 
 function Watchlist({
   currentUserId,
@@ -110,7 +110,7 @@ function Watchlist({
           value={newTech}
           onChange={(change) => setNewTech(change.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="node.js, python, react"
+          placeholder={QUICK_TECH_OR_HINT}
           disabled={isLoading}
         />
         <button
@@ -151,7 +151,7 @@ function Watchlist({
         {watchlist.length === 0 && (
           <li className="watchlist-empty">
             <p>No technologies tracked yet.</p>
-            <p className="watchlist-empty-hint">Add node.js, python, or react above.</p>
+            <p className="watchlist-empty-hint">Add {QUICK_TECH_OR_HINT} above.</p>
           </li>
         )}
         {watchlist.map((item, idx) => {

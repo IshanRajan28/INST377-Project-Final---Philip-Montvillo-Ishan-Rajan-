@@ -1,3 +1,5 @@
+import { NODE_JS_DISPLAY, QUICK_TECH_EXAMPLES } from "../lib/techHelpers";
+
 function About({ goBackToLogin, backButtonText = "Back to sign in" }) {
   const stackItems = [
     "React + Vite",
@@ -70,9 +72,9 @@ function About({ goBackToLogin, backButtonText = "Back to sign in" }) {
             <h2>Try it</h2>
             <p>
               Create an account, then add{" "}
-              <span className="aboutInlineCode">node.js</span>,{" "}
-              <span className="aboutInlineCode">python</span>, or{" "}
-              <span className="aboutInlineCode">react</span> to see live
+              <span className="aboutInlineCode">{NODE_JS_DISPLAY}</span>,{" "}
+              <span className="aboutInlineCode">{QUICK_TECH_EXAMPLES[1]}</span>, or{" "}
+              <span className="aboutInlineCode">{QUICK_TECH_EXAMPLES[2]}</span> to see live
               advisories.
             </p>
           </div>

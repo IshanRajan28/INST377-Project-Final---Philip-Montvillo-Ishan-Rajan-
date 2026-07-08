@@ -14,7 +14,7 @@ Add portfolio-ready screenshots here after deploying the latest UI.
 
 1. Deploy to Vercel first so the live demo matches.
 2. Use **1280px** browser width for consistent framing.
-3. For dashboard, add `nodejs` and `python` so CVE cards are visible.
+3. For dashboard, add `node.js` and `python` so CVE cards are visible.
 4. Crop to content — avoid excess empty background.
 5. Optional: record a **15s screen recording** (add → CVEs load → browse carousel) for your portfolio site.
 
@@ -22,6 +22,6 @@ Add portfolio-ready screenshots here after deploying the latest UI.
 
 1. Login page (2s)
 2. Sign in → dashboard loads (3s)
-3. Add `nodejs` to watchlist (3s)
+3. Add `node.js` to watchlist (3s)
 4. CVE cards appear in carousel (4s)
 5. Hover a CVE card, click CVE ID link (3s)

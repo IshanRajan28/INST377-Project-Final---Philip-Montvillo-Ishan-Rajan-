@@ -424,7 +424,6 @@ button:disabled {
   background: var(--canvas);
   border: 1px solid var(--rule);
   border-radius: var(--radius-sm);
-  text-transform: lowercase;
 }
 
 .login-advisory-specimen {
@@ -482,7 +481,6 @@ button:disabled {
   font-family: var(--font-mono);
   font-size: 0.6875rem;
   color: var(--muted);
-  text-transform: lowercase;
   letter-spacing: 0.02em;
 }
 

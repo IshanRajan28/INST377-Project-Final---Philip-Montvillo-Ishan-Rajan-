@@ -2,6 +2,10 @@
 
 import "../App.css";
 import { useState, useEffect } from "react";
+import {
+  NODE_JS_DISPLAY,
+  QUICK_TECH_EXAMPLES,
+} from "../lib/techHelpers";
 import About from "./About";
 import Dashboard from "./Dashboard";
 import { supabase } from "../lib/supabaseClient";
@@ -242,9 +246,11 @@ function LoginPage() {
           <div className="loginQuickStart" aria-hidden="true">
             <span className="loginQuickStart-label">Popular stacks</span>
             <div className="loginQuickStart-chips">
-              <span className="loginQuickStart-chip">node.js</span>
-              <span className="loginQuickStart-chip">python</span>
-              <span className="loginQuickStart-chip">react</span>
+              {QUICK_TECH_EXAMPLES.map((tech) => (
+                <span key={tech} className="loginQuickStart-chip">
+                  {tech}
+                </span>
+              ))}
             </div>
           </div>
 
@@ -258,7 +264,7 @@ function LoginPage() {
               Node.js HTTP request smuggling via malformed Transfer-Encoding
               headers.
             </p>
-            <span className="login-specimen-tag">node.js</span>
+            <span className="login-specimen-tag">{NODE_JS_DISPLAY}</span>
           </div>
         </section>
 
