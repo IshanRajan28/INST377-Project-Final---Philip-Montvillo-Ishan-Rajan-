@@ -79,6 +79,11 @@ function Watchlist({
     }
   };
 
+  const getCveCount = (item) => {
+    if (item.details?.loading) return null;
+    return item?.details?.vulnerabilities?.length ?? 0;
+  };
+
   return (
     <div className="watchlist-panel">
       <div className="watchlist-add-panel">
@@ -121,7 +126,24 @@ function Watchlist({
               key={item.id || nameToDisplay || idx}
               className="watchlist-item"
             >
-              <span className="watchlist-item-name">{nameToDisplay}</span>
+              <div className="watchlist-item-label">
+                <span className="watchlist-item-name">{nameToDisplay}</span>
+                {item.details?.loading ? (
+                  <span
+                    className="watchlist-cve-count watchlist-cve-count--loading"
+                    aria-label="Loading CVE count"
+                  >
+                    <span className="watchlist-count-spinner" />
+                  </span>
+                ) : (
+                  <span
+                    className="watchlist-cve-count"
+                    aria-label={`${getCveCount(item)} CVEs found`}
+                  >
+                    ({getCveCount(item)})
+                  </span>
+                )}
+              </div>
               <button
                 type="button"
                 className="removeTechButton"

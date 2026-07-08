@@ -295,6 +295,14 @@ button:disabled {
   display: flex;
   flex-direction: column;
   box-shadow: var(--shadow-soft);
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.cveCard:hover {
+  background: var(--surface-raised);
+  border-color: rgba(91, 163, 224, 0.35);
+  box-shadow: var(--shadow-soft), 0 0 0 1px rgba(91, 163, 224, 0.12);
 }
 
 .cveCard::before {
@@ -700,12 +708,43 @@ button:disabled {
   border-color: var(--muted);
 }
 
+.watchlist-item-label {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+
 .watchlist-item-name {
   font-family: var(--font-mono);
   font-size: 0.8125rem;
   text-transform: lowercase;
   overflow-wrap: anywhere;
   color: var(--ink);
+}
+
+.watchlist-cve-count {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.watchlist-cve-count--loading {
+  display: inline-flex;
+  align-items: center;
+  min-width: 14px;
+}
+
+.watchlist-count-spinner {
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid var(--rule);
+  border-top-color: var(--ink-soft);
+  border-radius: 50%;
+  animation: watchlist-count-spin 0.7s linear infinite;
 }
 
 .removeTechButton {
@@ -916,6 +955,62 @@ button:disabled {
   width: 100%;
 }
 
+.cve-skeleton-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  padding: 4px 0 8px;
+}
+
+.cve-skeleton-card {
+  min-height: 168px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--rule);
+  background: linear-gradient(
+    90deg,
+    var(--surface) 0%,
+    var(--surface-raised) 50%,
+    var(--surface) 100%
+  );
+  background-size: 200% 100%;
+  animation: cve-skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cve-slide-enter .cveCard {
+    animation: cve-card-fade-in 0.4s ease-out both;
+    animation-delay: var(--cve-enter-delay, 0s);
+  }
+}
+
+@keyframes cve-card-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cve-skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes watchlist-count-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* ── Responsive ── */
 @media (max-width: 900px) {
   .dashboardColumns {
@@ -947,6 +1042,11 @@ button:disabled {
 
   .techRow .swiper {
     padding: 4px 40px 8px;
+  }
+
+  .cve-skeleton-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
 }
 

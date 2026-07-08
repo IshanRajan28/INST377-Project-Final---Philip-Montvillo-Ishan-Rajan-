@@ -39,9 +39,18 @@ function WatchlistCarousel({ watchlist, isLoading = false }) {
             </div>
 
             {item.details?.loading ? (
-              <p className="dashboard-loading tech-loading" role="status">
-                Loading CVEs for {displayName}...
-              </p>
+              <div className="cve-skeleton-row" role="status" aria-live="polite">
+                <span className="visually-hidden">
+                  Loading CVEs for {displayName}
+                </span>
+                {[0, 1, 2].map((slot) => (
+                  <div
+                    key={slot}
+                    className="cve-skeleton-card"
+                    aria-hidden="true"
+                  />
+                ))}
+              </div>
             ) : vulnerabilities.length === 0 ? (
               <div
                 className={`cve-empty-notice${item.details?.fetchError ? " cve-empty-notice--error" : ""}`}
@@ -72,7 +81,13 @@ function WatchlistCarousel({ watchlist, isLoading = false }) {
                   const cveData = bug.cve || bug;
 
                   return (
-                    <SwiperSlide key={cveData?.id || bugIndex}>
+                    <SwiperSlide
+                      key={cveData?.id || bugIndex}
+                      className="cve-slide-enter"
+                      style={{
+                        "--cve-enter-delay": `${Math.min(bugIndex, 6) * 0.06}s`,
+                      }}
+                    >
                       <CveCard cve={cveData} />
                     </SwiperSlide>
                   );
