@@ -17,7 +17,7 @@ function WatchlistCarousel({ watchlist, isLoading = false }) {
       return null;
     }
     return (
-      <div className="empty-state liquid-glass">
+      <div className="empty-state">
         <p>Add a technology to your stack</p>
         <p className="empty-state-hint">
           Use the sidebar to track something like nodejs, python, or react.
@@ -33,7 +33,7 @@ function WatchlistCarousel({ watchlist, isLoading = false }) {
         const vulnerabilities = item?.details?.vulnerabilities ?? [];
 
         return (
-          <div key={item.id || displayName || index} className="techRow liquid-glass-strong">
+          <div key={item.id || displayName || index} className="techRow">
             <div className="techRowHeader">
               <h3>{displayName}</h3>
             </div>
@@ -44,7 +44,7 @@ function WatchlistCarousel({ watchlist, isLoading = false }) {
               </p>
             ) : vulnerabilities.length === 0 ? (
               <div
-                className={`cve-empty-notice liquid-glass${item.details?.fetchError ? " cve-empty-notice--error" : ""}`}
+                className={`cve-empty-notice${item.details?.fetchError ? " cve-empty-notice--error" : ""}`}
                 role="status"
               >
                 <p>
@@ -58,7 +58,7 @@ function WatchlistCarousel({ watchlist, isLoading = false }) {
             ) : (
               <>
               {item.details?.showingHistorical && (
-                <p className="historical-notice liquid-glass" role="status">
+                <p className="historical-notice" role="status">
                   No CVEs from the last 2 years for this keyword. Showing
                   older NVD results — try a more specific technology name.
                 </p>

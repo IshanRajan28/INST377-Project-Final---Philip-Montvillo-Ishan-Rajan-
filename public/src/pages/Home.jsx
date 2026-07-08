@@ -2,21 +2,8 @@
 
 import "../App.css";
 import { useState, useEffect } from "react";
-import {
-  Shield,
-  Download,
-  Wand2,
-  BookOpen,
-  ArrowRight,
-  Globe,
-  Rss,
-  Share2,
-  Menu,
-  Sparkles,
-} from "lucide-react";
 import About from "./About";
 import Dashboard from "./Dashboard";
-import VideoBackground from "../components/VideoBackground";
 import { supabase } from "../lib/supabaseClient";
 import {
   validateAuthInput,
@@ -200,11 +187,11 @@ function LoginPage() {
 
   if (!authReady) {
     return (
-      <VideoBackground>
+      <div className="loginPageLayout">
         <p className="auth-loading" role="status">
           Loading...
         </p>
-      </VideoBackground>
+      </div>
     );
   }
 
@@ -229,217 +216,84 @@ function LoginPage() {
   }
 
   return (
-    <VideoBackground>
-      <div className="hero-layout">
-        <div className="hero-left">
-          <div className="hero-panel liquid-glass-strong">
-            <nav className="hero-nav">
-              <div className="brand-lockup">
-                <span className="icon-circle">
-                  <Shield size={18} strokeWidth={1.75} />
-                </span>
-                <span className="brand-name">tracker</span>
-              </div>
-              <button
-                type="button"
-                className="menu-pill liquid-glass interactive-scale"
-                onClick={() => setShowAbout(true)}
-              >
-                <Menu size={16} />
-                Menu
-              </button>
-            </nav>
+    <div className="loginPageLayout">
+      <div className="login-container">
+        <header className="login-container-header">
+          <p className="login-eyebrow">Vulnerability Tracker</p>
+          <h1 className="login-heroTitle">CVE feed for your stack</h1>
+          <p className="login-heroText">
+            Sign in to track technologies and read matching advisories.
+          </p>
+        </header>
+        <form onSubmit={handleLogin} noValidate>
+          <label htmlFor="login-email">Email</label>
+          <input
+            id="login-email"
+            type="email"
+            autoComplete="email"
+            value={email}
+            onChange={handleEmailChange}
+            disabled={isLoading}
+            required
+          />
 
-            <div className="hero-center">
-              <span className="icon-circle hero-logo liquid-glass">
-                <Shield size={36} strokeWidth={1.5} />
-              </span>
+          <label htmlFor="login-password">Password</label>
+          <input
+            id="login-password"
+            type="password"
+            autoComplete="current-password"
+            value={password}
+            onChange={handlePasswordChange}
+            disabled={isLoading}
+            minLength={6}
+            required
+          />
 
-              <h1 className="hero-title">
-                Tracking the <em>spirit of your stack</em>
-              </h1>
-
-              <form className="auth-form" onSubmit={handleLogin} noValidate>
-                <label htmlFor="login-email">Email</label>
-                <input
-                  id="login-email"
-                  type="email"
-                  autoComplete="email"
-                  value={email}
-                  onChange={handleEmailChange}
-                  disabled={isLoading}
-                  required
-                />
-
-                <label htmlFor="login-password">Password</label>
-                <input
-                  id="login-password"
-                  type="password"
-                  autoComplete="current-password"
-                  value={password}
-                  onChange={handlePasswordChange}
-                  disabled={isLoading}
-                  minLength={6}
-                  required
-                />
-
-                {errorMessage && (
-                  <p className="banner banner-error" role="alert">
-                    {errorMessage}
-                  </p>
-                )}
-                {successMessage && (
-                  <p className="banner banner-success" role="status">
-                    {successMessage}
-                  </p>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="auth-cta liquid-glass-strong interactive-scale"
-                  aria-busy={authAction === "signIn"}
-                >
-                  <span className="icon-circle icon-circle-sm">
-                    <Download size={14} />
-                  </span>
-                  {authAction === "signIn" ? "Signing in..." : "Sign in"}
-                </button>
-
-                <button
-                  type="button"
-                  disabled={isLoading}
-                  onClick={handleSignUp}
-                  className="auth-secondary liquid-glass interactive-scale"
-                  aria-busy={authAction === "signUp"}
-                >
-                  {authAction === "signUp"
-                    ? "Creating account..."
-                    : "Create account"}
-                </button>
-
-                <p className="auth-hint">
-                  New accounts need email confirmation before you can sign in.
-                </p>
-              </form>
-
-              <div className="hero-pills">
-                <span className="hero-pill liquid-glass">CVE feed</span>
-                <span className="hero-pill liquid-glass">Stack watchlist</span>
-                <span className="hero-pill liquid-glass">Severity scores</span>
-              </div>
-            </div>
-
-            <footer className="hero-quote">
-              <p className="quote-label">Threat intelligence</p>
-              <p className="quote-text">
-                <span>See only the advisories that </span>
-                <em>match what you run.</em>
-              </p>
-              <p className="quote-author">VULNERABILITY TRACKER</p>
-            </footer>
-          </div>
-        </div>
-
-        <aside className="hero-right">
-          <div className="hero-right-top">
-            <div className="social-pill liquid-glass">
-              <a
-                href="https://nvd.nist.gov/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="social-link icon-circle"
-                aria-label="NVD"
-              >
-                <Globe size={14} />
-              </a>
-              <a
-                href="https://www.linkedin.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="social-link icon-circle"
-                aria-label="Share"
-              >
-                <Share2 size={14} />
-              </a>
-              <a
-                href="https://www.instagram.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="social-link icon-circle"
-                aria-label="Feed"
-              >
-                <Rss size={14} />
-              </a>
-              <span className="icon-circle">
-                <ArrowRight size={14} />
-              </span>
-            </div>
-            <button
-              type="button"
-              className="icon-circle liquid-glass interactive-scale"
-              aria-label="Account"
-            >
-              <Sparkles size={16} />
-            </button>
-          </div>
-
-          <div className="community-card liquid-glass">
-            <h3>How this works</h3>
-            <p>
-              Build a watchlist, pull CVEs from NVD, and read advisories grouped
-              by technology.
+          {errorMessage && (
+            <p className="banner banner-error" role="alert">
+              {errorMessage}
             </p>
-            <button
-              type="button"
-              className="text-link"
-              onClick={() => setShowAbout(true)}
-            >
-              Read more
-            </button>
-          </div>
+          )}
+          {successMessage && (
+            <p className="banner banner-success" role="status">
+              {successMessage}
+            </p>
+          )}
 
-          <div className="hero-features liquid-glass-strong">
-            <div className="feature-row">
-              <div className="feature-card liquid-glass">
-                <span className="icon-circle">
-                  <Wand2 size={16} />
-                </span>
-                <h4>CVE scanning</h4>
-                <p>Query NVD for each item on your stack watchlist.</p>
-              </div>
-              <div className="feature-card liquid-glass">
-                <span className="icon-circle">
-                  <BookOpen size={16} />
-                </span>
-                <h4>Advisory archive</h4>
-                <p>Severity, description, and publish date in one feed.</p>
-              </div>
-            </div>
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="login-button"
+            aria-busy={authAction === "signIn"}
+          >
+            {authAction === "signIn" ? "Signing in..." : "Sign in"}
+          </button>
 
-            <div className="feature-bottom liquid-glass">
-              <img
-                className="feature-thumb"
-                src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=200&h=140&fit=crop"
-                alt=""
-              />
-              <div className="feature-bottom-text">
-                <h4>Stack-aware monitoring</h4>
-                <p>Filter noise. Focus on CVEs that apply to your technologies.</p>
-              </div>
-              <button
-                type="button"
-                className="icon-circle liquid-glass interactive-scale"
-                onClick={() => setShowAbout(true)}
-                aria-label="Learn more"
-              >
-                +
-              </button>
-            </div>
-          </div>
-        </aside>
+          <button
+            type="button"
+            disabled={isLoading}
+            onClick={handleSignUp}
+            className="signup-button"
+            aria-busy={authAction === "signUp"}
+          >
+            {authAction === "signUp" ? "Creating account..." : "Create account"}
+          </button>
+
+          <p className="message-text">
+            New accounts need email confirmation before you can sign in.
+          </p>
+        </form>
       </div>
-    </VideoBackground>
+
+      <button
+        type="button"
+        className="textLink-button"
+        onClick={() => setShowAbout(true)}
+        disabled={isLoading}
+      >
+        How this works
+      </button>
+    </div>
   );
 }
 

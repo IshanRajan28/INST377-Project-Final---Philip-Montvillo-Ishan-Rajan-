@@ -81,7 +81,7 @@ function Watchlist({
 
   return (
     <div className="watchlist-panel">
-      <div className="watchlist-add-panel liquid-glass">
+      <div className="watchlist-add-panel">
       <label htmlFor="watchlist-input" className="visually-hidden">
         Add technology to watchlist
       </label>
@@ -98,7 +98,7 @@ function Watchlist({
         />
         <button
           type="button"
-          className="watchlist-add-btn liquid-glass-strong interactive-scale"
+          className="watchlist-add-btn"
           onClick={addToWatchlist}
           disabled={isLoading}
         >
@@ -119,12 +119,12 @@ function Watchlist({
           return (
             <li
               key={item.id || nameToDisplay || idx}
-              className="watchlist-item liquid-glass"
+              className="watchlist-item"
             >
               <span className="watchlist-item-name">{nameToDisplay}</span>
               <button
                 type="button"
-                className="removeTechButton liquid-glass interactive-scale"
+                className="removeTechButton"
                 onClick={() => deleteTech(nameToDisplay)}
                 aria-label={`Remove ${nameToDisplay} from watchlist`}
               >

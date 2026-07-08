@@ -49,7 +49,7 @@ function CveCard({ cve }) {
   const scoreLabel = score != null ? score.toFixed(1) : "N/A";
 
   return (
-    <article className={`cveCard liquid-glass ${severity}`}>
+    <article className={`cveCard ${severity}`}>
       <div className="cveCardHeader">
         <h4 className="cveCardId">
           {nvdUrl ? (
