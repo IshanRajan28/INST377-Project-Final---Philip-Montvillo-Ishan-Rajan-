@@ -282,17 +282,19 @@ function LoginPage() {
           <p className="message-text">
             New accounts need email confirmation before you can sign in.
           </p>
+
+          <div className="login-form-footer">
+            <button
+              type="button"
+              className="textLink-button"
+              onClick={() => setShowAbout(true)}
+              disabled={isLoading}
+            >
+              How this works
+            </button>
+          </div>
         </form>
       </div>
-
-      <button
-        type="button"
-        className="textLink-button"
-        onClick={() => setShowAbout(true)}
-        disabled={isLoading}
-      >
-        How this works
-      </button>
     </div>
   );
 }

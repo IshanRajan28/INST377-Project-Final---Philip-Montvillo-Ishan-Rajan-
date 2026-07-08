@@ -162,7 +162,6 @@ button:disabled {
   align-items: center;
   justify-content: center;
   padding: 32px 20px;
-  gap: 16px;
 }
 
 .login-container {
@@ -280,6 +279,13 @@ button:disabled {
   margin-top: 16px;
   font-weight: 400;
   line-height: 1.5;
+}
+
+.login-form-footer {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+  text-align: center;
 }
 
 /* ── CVE cards ── */
