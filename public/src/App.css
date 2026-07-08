@@ -1,25 +1,28 @@
-/* ── Tokens: NVD advisory workspace ── */
+/* ── Tokens: dark NVD advisory workspace ── */
 :root {
-  --canvas: #f4f6f8;
-  --ink: #1a2332;
-  --ink-soft: #3a4a5c;
-  --muted: #5f6f80;
-  --rule: #d4dbe3;
-  --surface: #ffffff;
-  --link: #145894;
-  --link-hover: #0e4778;
-  --severity-critical: #a31818;
-  --severity-high: #c43e10;
-  --severity-medium: #9a7200;
-  --severity-low: #2a6b34;
-  --severity-unknown: #5f6f80;
-  --banner-error-bg: #fdf0ee;
-  --banner-error-text: #8b1a12;
-  --banner-error-border: #efc5c0;
-  --banner-success-bg: #edf7f0;
-  --banner-success-text: #1a5c38;
-  --banner-success-border: #b9dcc8;
-  --shadow-soft: 0 1px 3px rgba(26, 35, 50, 0.05), 0 4px 14px rgba(26, 35, 50, 0.04);
+  color-scheme: dark;
+  --canvas: #0f1419;
+  --surface: #171e26;
+  --surface-raised: #1e2732;
+  --ink: #e8edf2;
+  --ink-soft: #b4c0cc;
+  --muted: #7d8b99;
+  --rule: #2a3542;
+  --link: #5ba3e0;
+  --link-hover: #7eb8ea;
+  --severity-critical: #e05252;
+  --severity-high: #e87840;
+  --severity-medium: #d4a72c;
+  --severity-low: #4caf6a;
+  --severity-unknown: #6b7a8a;
+  --banner-error-bg: rgba(224, 82, 82, 0.12);
+  --banner-error-text: #f5b8b3;
+  --banner-error-border: rgba(224, 82, 82, 0.35);
+  --banner-success-bg: rgba(76, 175, 106, 0.12);
+  --banner-success-text: #b9e0c5;
+  --banner-success-border: rgba(76, 175, 106, 0.35);
+  --focus-ring: rgba(91, 163, 224, 0.28);
+  --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.28), 0 4px 14px rgba(0, 0, 0, 0.18);
   --radius-sm: 4px;
   --radius-lg: 8px;
   --font-body: "IBM Plex Sans", system-ui, sans-serif;
@@ -55,7 +58,7 @@ input {
   padding: 11px 12px;
   border: 1px solid var(--rule);
   border-radius: var(--radius-sm);
-  background-color: var(--surface);
+  background-color: var(--surface-raised);
   color: var(--ink);
   font-size: 0.9375rem;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
@@ -69,7 +72,7 @@ input:focus,
 button:focus-visible {
   outline: none;
   border-color: var(--link);
-  box-shadow: 0 0 0 3px rgba(21, 101, 168, 0.18);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 button {
@@ -223,8 +226,9 @@ button:disabled {
 
 .login-button {
   background: var(--link);
-  color: white;
+  color: #0f1419;
   border: none;
+  font-weight: 700;
 }
 
 .login-button:hover:not(:disabled) {
@@ -238,8 +242,8 @@ button:disabled {
 }
 
 .signup-button:hover:not(:disabled) {
-  background: var(--canvas);
-  border-color: var(--ink-soft);
+  background: var(--surface-raised);
+  border-color: var(--muted);
 }
 
 .login-button,
@@ -411,7 +415,7 @@ button:disabled {
 
 .severityBadge.medium {
   background: var(--severity-medium);
-  color: var(--ink);
+  color: #1a1a1a;
 }
 
 .severityBadge.low {
@@ -521,8 +525,8 @@ button:disabled {
 }
 
 .backToLoginButton:hover {
-  background: var(--canvas);
-  border-color: var(--ink-soft);
+  background: var(--surface-raised);
+  border-color: var(--muted);
 }
 
 /* ── Dashboard ── */
@@ -638,7 +642,7 @@ button:disabled {
 }
 
 .watchlist-add-panel {
-  background: var(--canvas);
+  background: var(--surface-raised);
   border: 1px solid var(--rule);
   border-radius: var(--radius-lg);
   padding: 14px;
@@ -666,7 +670,7 @@ button:disabled {
   width: auto;
   flex-shrink: 0;
   background: var(--link);
-  color: white;
+  color: #0f1419;
   border: none;
   padding: 10px 16px;
   border-radius: var(--radius-sm);
@@ -689,7 +693,7 @@ button:disabled {
 }
 
 .watchlist-item {
-  background: var(--surface);
+  background: var(--surface-raised);
   border: 1px solid var(--rule);
   border-radius: var(--radius-sm);
   padding: 10px 12px;
@@ -704,7 +708,7 @@ button:disabled {
 }
 
 .watchlist-item:hover {
-  border-color: var(--ink-soft);
+  border-color: var(--muted);
 }
 
 .watchlist-item-name {
