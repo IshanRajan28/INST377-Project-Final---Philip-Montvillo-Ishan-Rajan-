@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
+import { Shield } from "lucide-react";
 import Watchlist from "../components/Watchlist";
 import WatchlistCarousel from "../components/WatchlistCarousel";
+import VideoBackground from "../components/VideoBackground";
 
 function Dashboard({ currentUserId, userEmail, onLogout, onShowAbout }) {
   const [watchlist, setWatchlist] = useState([]);
@@ -75,70 +77,89 @@ function Dashboard({ currentUserId, userEmail, onLogout, onShowAbout }) {
 
   if (!currentUserId) {
     return (
-      <p className="dashboard-message">Please log in to view your dashboard.</p>
+      <VideoBackground>
+        <p className="dashboard-message">Please log in to view your dashboard.</p>
+      </VideoBackground>
     );
   }
 
   return (
-    <main className="dashboardLayout">
-      <header className="dashboardTopBar">
-        <div className="dashboardBrand">
-          <h1 className="dashboardAppTitle">Vulnerability Tracker</h1>
-          {userEmail && <p className="dashboardUserEmail">{userEmail}</p>}
-        </div>
-      </header>
-
-      <div className="dashboardColumns">
-        <section className="dashboardWatchlist" aria-label="Your stack">
-          <h2 className="panelTitle">Your stack</h2>
-
-          <Watchlist
-            currentUserId={currentUserId}
-            watchlist={watchlist}
-            setWatchlist={setWatchlist}
-            refreshWatchlist={refreshAll}
-          />
-
-          <button
-            type="button"
-            className="textLink-button dashboardAbout"
-            onClick={onShowAbout}
-          >
-            How this works
-          </button>
-
-          <button type="button" className="dashboardLogout" onClick={onLogout}>
-            Log out
-          </button>
-        </section>
-
-        <section className="dashboardThreats" aria-label="Advisories">
-          <header className="dashboardThreats-header">
-            <h2>Advisories</h2>
-            <p>CVEs from NVD matched to your stack</p>
-          </header>
-
-          <div className="dashboardThreats-content">
-          {error && (
-            <p className="banner banner-error" role="alert">
-              {error}
-            </p>
-          )}
-
-          {isLoadingCves && (
-            <p className="dashboard-loading" role="status">
-              Loading advisories from NVD…
-            </p>
-          )}
-
-          <WatchlistCarousel
-            watchlist={watchlist}
-            isLoading={isLoadingCves}
-          />
+    <VideoBackground>
+      <main className="dashboardLayout">
+        <header className="dashboardTopBar liquid-glass-strong">
+          <div className="dashboardBrand">
+            <div className="brand-lockup">
+              <span className="icon-circle">
+                <Shield size={16} />
+              </span>
+              <h1 className="dashboardAppTitle">Vulnerability Tracker</h1>
+            </div>
+            {userEmail && <p className="dashboardUserEmail">{userEmail}</p>}
           </div>
-        </section>
-      </div>
-    </main>
+        </header>
+
+        <div className="dashboardColumns">
+          <section
+            className="dashboardWatchlist liquid-glass-strong"
+            aria-label="Your stack"
+          >
+            <h2 className="panelTitle">Your stack</h2>
+
+            <Watchlist
+              currentUserId={currentUserId}
+              watchlist={watchlist}
+              setWatchlist={setWatchlist}
+              refreshWatchlist={refreshAll}
+            />
+
+            <button
+              type="button"
+              className="text-link dashboardAbout"
+              onClick={onShowAbout}
+            >
+              How this works
+            </button>
+
+            <button
+              type="button"
+              className="dashboardLogout liquid-glass interactive-scale"
+              onClick={onLogout}
+            >
+              Log out
+            </button>
+          </section>
+
+          <section
+            className="dashboardThreats liquid-glass-strong"
+            aria-label="Advisories"
+          >
+            <header className="dashboardThreats-header">
+              <h2>Advisories</h2>
+              <p>CVEs from NVD matched to your stack</p>
+            </header>
+
+            <div className="dashboardThreats-content">
+              {error && (
+                <p className="banner banner-error" role="alert">
+                  {error}
+                </p>
+              )}
+
+              {isLoadingCves && (
+                <p className="dashboard-loading" role="status">
+                  Loading advisories from NVD…
+                </p>
+              )}
+
+              <WatchlistCarousel
+                watchlist={watchlist}
+                isLoading={isLoadingCves}
+              />
+            </div>
+          </section>
+        </div>
+      </main>
+    </VideoBackground>
   );
 }
 
