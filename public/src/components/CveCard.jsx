@@ -1,3 +1,8 @@
+import {
+  getCvssScore,
+  getSeverityFromScore,
+} from "../lib/cveHelpers";
+
 function formatPublishedDate(isoString) {
   if (!isoString || typeof isoString !== "string") {
     return "Unknown publish date";
@@ -29,23 +34,8 @@ function CveCard({ cve }) {
 
   const publishedDate = formatPublishedDate(cveData?.published);
 
-  const score =
-    cveData?.metrics?.cvssMetricV31?.[0]?.cvssData?.baseScore ??
-    cveData?.metrics?.cvssMetricV30?.[0]?.cvssData?.baseScore ??
-    cveData?.metrics?.cvssMetricV2?.[0]?.cvssData?.baseScore ??
-    null;
-
-  let severity = "unknown";
-  if (score >= 9) {
-    severity = "critical";
-  } else if (score >= 7) {
-    severity = "high";
-  } else if (score >= 4) {
-    severity = "medium";
-  } else if (score > 0) {
-    severity = "low";
-  }
-
+  const score = getCvssScore(cveData);
+  const severity = getSeverityFromScore(score);
   const scoreLabel = score != null ? score.toFixed(1) : "N/A";
 
   return (
@@ -75,7 +65,12 @@ function CveCard({ cve }) {
 
       <p className="cveDescription">{description}</p>
 
-      <small className="cvePublished">Published · {publishedDate}</small>
+      <footer className="cveCardFooter">
+        <small className="cvePublished">Published · {publishedDate}</small>
+        {nvdUrl && (
+          <span className="cveCardSource">NIST NVD</span>
+        )}
+      </footer>
     </article>
   );
 }

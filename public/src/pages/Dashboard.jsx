@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import Watchlist from "../components/Watchlist";
 import WatchlistCarousel from "../components/WatchlistCarousel";
+import { summarizeWatchlist } from "../lib/cveHelpers";
 
 function Dashboard({ currentUserId, userEmail, onLogout, onShowAbout }) {
   const [watchlist, setWatchlist] = useState([]);
@@ -73,17 +74,10 @@ function Dashboard({ currentUserId, userEmail, onLogout, onShowAbout }) {
     await fetchVulnerabilities();
   }, [fetchVulnerabilities]);
 
-  const dashboardStats = useMemo(() => {
-    const advisories = watchlist.reduce((sum, item) => {
-      if (item.details?.loading) return sum;
-      return sum + (item.details?.vulnerabilities?.length ?? 0);
-    }, 0);
-
-    return {
-      technologies: watchlist.length,
-      advisories,
-    };
-  }, [watchlist]);
+  const dashboardStats = useMemo(
+    () => summarizeWatchlist(watchlist),
+    [watchlist]
+  );
 
   const showDashboardStats =
     watchlist.length > 0 &&
@@ -123,6 +117,19 @@ function Dashboard({ currentUserId, userEmail, onLogout, onShowAbout }) {
                 </span>
                 <span className="dashboardStat-label">advisories</span>
               </div>
+              {dashboardStats.highestSeverity && (
+                <>
+                  <span className="dashboardStat-divider" aria-hidden="true" />
+                  <div className="dashboardStat">
+                    <span
+                      className={`dashboardStat-severity ${dashboardStats.highestSeverity}`}
+                    >
+                      {dashboardStats.highestSeverity.toUpperCase()}
+                    </span>
+                    <span className="dashboardStat-label">highest risk</span>
+                  </div>
+                </>
+              )}
             </div>
           )}
         </div>
@@ -130,7 +137,10 @@ function Dashboard({ currentUserId, userEmail, onLogout, onShowAbout }) {
 
       <div className="dashboardColumns">
         <section className="dashboardWatchlist" aria-label="Your stack">
-          <h2 className="panelTitle">Your stack</h2>
+          <div className="panelTitleRow">
+            <h2 className="panelTitle">Your stack</h2>
+            <span className="panelTitle-meta">up to 5</span>
+          </div>
 
           <Watchlist
             currentUserId={currentUserId}
@@ -155,8 +165,11 @@ function Dashboard({ currentUserId, userEmail, onLogout, onShowAbout }) {
         <section className="dashboardThreats" aria-label="Advisories">
           <header className="dashboardThreats-header">
             <div className="dashboardThreats-headerText">
-              <h2>Advisories</h2>
-              <p>CVEs from NVD matched to your stack</p>
+              <div className="dashboardThreats-titleRow">
+                <h2>Advisories</h2>
+                <span className="sourceBadge">NIST NVD</span>
+              </div>
+              <p>CVEs matched to your stack with CVSS severity</p>
             </div>
             {showDashboardStats && (
               <p className="dashboardThreats-summary" aria-live="polite">

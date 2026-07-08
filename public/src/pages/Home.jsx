@@ -217,13 +217,22 @@ function LoginPage() {
 
   return (
     <div className="loginPageLayout">
-      <div className="login-container">
-        <header className="login-container-header">
+      <div className="loginShell">
+        <section className="loginShowcase" aria-labelledby="login-hero-title">
           <p className="login-eyebrow">Vulnerability Tracker</p>
-          <h1 className="login-heroTitle">CVE feed for your stack</h1>
+          <h1 id="login-hero-title" className="login-heroTitle">
+            CVE feed for your stack
+          </h1>
           <p className="login-heroText">
-            Sign in to track technologies and read matching advisories.
+            Monitor NIST NVD advisories for the technologies you actually run —
+            not thousands of unrelated CVEs.
           </p>
+
+          <ul className="loginFeatureList">
+            <li>Personal watchlist with persistent storage</li>
+            <li>Live NVD data with CVSS severity ranking</li>
+            <li>CPE-aware matching to reduce false positives</li>
+          </ul>
 
           <div className="login-advisory-specimen" aria-hidden="true">
             <div className="login-specimen-meta">
@@ -236,8 +245,15 @@ function LoginPage() {
             </p>
             <span className="login-specimen-tag">nodejs</span>
           </div>
-        </header>
-        <form onSubmit={handleLogin} noValidate>
+        </section>
+
+        <section className="login-container login-container--auth">
+          <header className="login-authHeader">
+            <h2 className="login-authTitle">Sign in</h2>
+            <p className="login-authSubtitle">Access your advisory dashboard</p>
+          </header>
+
+          <form onSubmit={handleLogin} noValidate>
           <label htmlFor="login-email">Email</label>
           <input
             id="login-email"
@@ -306,6 +322,7 @@ function LoginPage() {
             </button>
           </div>
         </form>
+        </section>
       </div>
     </div>
   );
