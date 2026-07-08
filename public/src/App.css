@@ -205,6 +205,53 @@ button:disabled {
   line-height: 1.5;
 }
 
+.login-advisory-specimen {
+  margin-top: 18px;
+  padding: 12px 14px 12px 18px;
+  background: var(--canvas);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--severity-high);
+  position: relative;
+}
+
+.login-specimen-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.login-specimen-id {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--link);
+  letter-spacing: 0.01em;
+}
+
+.login-specimen-desc {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--ink-soft);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.login-specimen-tag {
+  display: inline-block;
+  margin-top: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--muted);
+  text-transform: lowercase;
+  letter-spacing: 0.02em;
+}
+
 .login-container form {
   padding: 24px;
 }
@@ -508,6 +555,23 @@ button:disabled {
 
 .aboutSection li + li {
   margin-top: 6px;
+}
+
+.aboutSection-compact {
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+
+.aboutSection-stack {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  background: var(--canvas);
+}
+
+.aboutInlineCode {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  color: var(--ink);
 }
 
 .aboutCard-footer {

@@ -224,6 +224,18 @@ function LoginPage() {
           <p className="login-heroText">
             Sign in to track technologies and read matching advisories.
           </p>
+
+          <div className="login-advisory-specimen" aria-hidden="true">
+            <div className="login-specimen-meta">
+              <span className="login-specimen-id">CVE-2024-21896</span>
+              <span className="severityBadge high">HIGH 7.5</span>
+            </div>
+            <p className="login-specimen-desc">
+              Node.js HTTP request smuggling via malformed Transfer-Encoding
+              headers.
+            </p>
+            <span className="login-specimen-tag">nodejs</span>
+          </div>
         </header>
         <form onSubmit={handleLogin} noValidate>
           <label htmlFor="login-email">Email</label>

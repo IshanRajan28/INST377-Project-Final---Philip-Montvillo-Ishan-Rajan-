@@ -5,46 +5,48 @@ function About({ goBackToLogin, backButtonText = "Back to sign in" }) {
         <header className="aboutCard-header">
           <h1>How this works</h1>
           <p>
-            Vulnerability Tracker surfaces CVEs that match the technologies in
-            your development stack.
+            Pick the technologies you run. Vulnerability Tracker queries NIST
+            NVD and surfaces advisories that match your stack — severity,
+            description, and publish date in one feed.
           </p>
         </header>
 
         <div className="aboutSection">
-          <p>
-            Vulnerability databases hold thousands of CVEs across every
-            technology imaginable. This app narrows that noise: you pick what you
-            run, and the dashboard surfaces advisories that actually apply to
-            your stack.
-          </p>
-        </div>
-
-        <div className="aboutSection">
           <h2>The problem</h2>
           <p>
-            Developers and DevOps teams face information overload when scanning
-            raw CVE feeds. Most entries do not touch the frameworks, runtimes, or
-            libraries they deploy. Finding what matters means filtering through
-            noise by hand.
+            CVE databases cover every product under the sun. Most entries never
+            touch the frameworks, runtimes, or libraries you actually deploy.
+            Finding what matters means filtering through noise by hand.
           </p>
         </div>
 
         <div className="aboutSection">
           <h2>The approach</h2>
           <p>
-            Your watchlist persists between sessions. The app queries the NVD
-            API for each technology you track, then groups results by stack item:
-            severity, description, and publish date in one feed.
+            Your watchlist persists between sessions. For each technology you
+            track, the app queries NVD with CPE-aware matching, filters for
+            relevance, and groups results in a browsable dashboard.
           </p>
         </div>
 
-        <div className="aboutSection">
-          <h2>Built with</h2>
+        <div className="aboutSection aboutSection-compact">
+          <h2>Try it</h2>
+          <p>
+            Create an account, then add technologies like{" "}
+            <span className="aboutInlineCode">nodejs</span>,{" "}
+            <span className="aboutInlineCode">python</span>, or{" "}
+            <span className="aboutInlineCode">react</span> to see live
+            advisories.
+          </p>
+        </div>
+
+        <div className="aboutSection aboutSection-stack">
+          <h2>Tech stack</h2>
           <ul>
-            <li>React for the interface</li>
-            <li>Node.js and Express for API routes</li>
-            <li>Supabase for authentication and watchlist storage</li>
-            <li>NVD API for CVE data</li>
+            <li>React + Vite</li>
+            <li>Node.js + Express</li>
+            <li>Supabase (auth + Postgres)</li>
+            <li>NIST NVD CVE API 2.0</li>
           </ul>
         </div>
 
