@@ -87,7 +87,7 @@ function WatchlistCarousel({ watchlist, isLoading = false, activeTech }) {
                 {item.details?.fetchError
                   ? `Could not reach NVD for ${displayName}. Wait 30 seconds and refresh, or confirm NVD_API_KEY is set on the server.`
                   : item.details?.noRelevantResults
-                    ? `NVD returned results for "${displayName}", but none matched this product after filtering. Try nodejs, python, or react.`
+                    ? `NVD returned results for "${displayName}", but none matched this product after filtering. Try nodejs, python, or express.`
                     : `No CVEs found for ${displayName}. Try nodejs, python, react, or express.`}
                 </p>
               </div>

@@ -90,12 +90,17 @@ app.post("/api/watchlist", async (req, res) => {
         .json({ error: "You are already tracking this technology!" });
     }
 
-    // Quick NVD check (single request — avoid slow double-fetch on add)
     try {
-      const hasMatches = await techHasRelevantCves(cleanTechName);
-      if (!hasMatches) {
+      const nvdCheck = await validateTechWithNvd(cleanTechName);
+      if (nvdCheck.fetchError) {
+        return res.status(503).json({
+          error:
+            "NVD API is temporarily unavailable. Please try again in a moment.",
+        });
+      }
+      if (!nvdCheck.hasMatches) {
         return res.status(400).json({
-          error: `"${req.body.tech_name}" has no matching CVEs in NVD. Try a specific product name (e.g. nodejs, python, react).`,
+          error: `"${req.body.tech_name}" has no matching CVEs in NVD. Try a specific product name (e.g. nodejs, python, express).`,
         });
       }
     } catch (nvdErr) {
@@ -163,8 +168,13 @@ const NVD_TECH_CONFIG = {
   },
   react: {
     cpeName: "cpe:2.3:a:facebook:react:*:*:*:*:*:*:*:*",
-    cpePatterns: [":facebook:react", ":react:"],
+    cpePatterns: [":facebook:react", ":meta:react"],
     keywordFallback: "react",
+  },
+  express: {
+    cpeName: "cpe:2.3:a:expressjs:express:*:*:*:*:*:*:*:*",
+    cpePatterns: [":expressjs:express", ":openjs:express"],
+    keywordFallback: "express",
   },
   java: {
     cpeName: "cpe:2.3:a:oracle:jdk:*:*:*:*:*:*:*:*",
@@ -242,6 +252,62 @@ function isRelevantNodejsCve(cve) {
   return nodeInDescription && nodeEcosystemContext;
 }
 
+const REACT_FALSE_POSITIVE =
+  /\bnuclear\b|\bchemical\b|\bchain reaction\b|\badverse reaction\b|\ballergic reaction\b/i;
+
+const REACT_VERB_FALSE_POSITIVE =
+  /\breact to\b|\breact when\b|\breact with\b|\breact by\b|\breact upon\b|\bdoes not properly react\b|\bwill react\b|\bcan react\b/i;
+
+function isRelevantReactCve(cve) {
+  const desc = (
+    cve.descriptions?.find((d) => d.lang === "en")?.value || ""
+  ).toLowerCase();
+  const cpeCriteria = collectCpeCriteria(cve);
+
+  if (matchesCpePatterns(cpeCriteria, NVD_TECH_CONFIG.react.cpePatterns)) {
+    return true;
+  }
+
+  if (REACT_FALSE_POSITIVE.test(desc) || REACT_VERB_FALSE_POSITIVE.test(desc)) {
+    return false;
+  }
+
+  if (
+    /\breact\.js\b|\breactjs\b|\bfacebook react\b|\bmeta react\b/.test(desc)
+  ) {
+    return true;
+  }
+
+  return (
+    /\breact\b/.test(desc) &&
+    /\b(npm|package|library|component|framework|javascript|jsx|frontend|webpack|node\.?js|create-react-app)\b/.test(
+      desc
+    )
+  );
+}
+
+const EXPRESS_FALSE_POSITIVE =
+  /\bamerican express\b|\bfedex\b|\bups express\b|\bexpress delivery\b|\bexpress train\b/i;
+
+function isRelevantExpressCve(cve) {
+  const desc = (
+    cve.descriptions?.find((d) => d.lang === "en")?.value || ""
+  ).toLowerCase();
+  const cpeCriteria = collectCpeCriteria(cve);
+
+  if (matchesCpePatterns(cpeCriteria, NVD_TECH_CONFIG.express.cpePatterns)) {
+    return true;
+  }
+
+  if (EXPRESS_FALSE_POSITIVE.test(desc)) {
+    return false;
+  }
+
+  return /\bexpress\.?js\b|\bexpress middleware\b|\bexpress framework\b/.test(
+    desc
+  );
+}
+
 function isRelevantCve(keyword, entry) {
   const config = NVD_TECH_CONFIG[keyword];
   if (!config) return true;
@@ -251,6 +317,12 @@ function isRelevantCve(keyword, entry) {
 
   if (keyword === "nodejs") {
     return isRelevantNodejsCve(cve);
+  }
+  if (keyword === "react") {
+    return isRelevantReactCve(cve);
+  }
+  if (keyword === "express") {
+    return isRelevantExpressCve(cve);
   }
 
   const cpeCriteria = collectCpeCriteria(cve);
@@ -267,7 +339,6 @@ function isRelevantCve(keyword, entry) {
 
   const descPatterns = {
     python: /\bpython\b(?!\.org)/,
-    react: /\breact(\.js)?\b.*\b(npm|package|library|component|framework)\b|\breact\.js\b/,
     java: /\b(java|jdk|jre|jvm|openjdk)\b/,
   };
 
@@ -299,10 +370,30 @@ async function requestNvd(url, retries = NVD_FETCH_RETRIES) {
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
       const response = await fetch(url, { headers: nvdHeaders() });
-      const data = await response.json();
+      const text = await response.text();
+      let data = {};
+      if (text) {
+        try {
+          data = JSON.parse(text);
+        } catch {
+          console.log("NVD non-JSON response:", response.status, text.slice(0, 120));
+          if (attempt < retries) {
+            await delay(1200 * (attempt + 1));
+            continue;
+          }
+          return { vulnerabilities: [], error: true };
+        }
+      }
 
       if (response.ok && Array.isArray(data.vulnerabilities)) {
         return { vulnerabilities: data.vulnerabilities, error: false };
+      }
+
+      if (
+        response.status === 404 &&
+        (!text || Array.isArray(data.vulnerabilities))
+      ) {
+        return { vulnerabilities: data.vulnerabilities || [], error: false };
       }
 
       if (isRateLimitResponse(response, data) && attempt < retries) {
@@ -310,7 +401,7 @@ async function requestNvd(url, retries = NVD_FETCH_RETRIES) {
         continue;
       }
 
-      console.log("NVD request failed:", response.status, data?.message || data);
+      console.log("NVD request failed:", response.status, data?.message || text.slice(0, 120));
       return { vulnerabilities: [], error: true, message: data?.message };
     } catch (err) {
       if (attempt < retries) {
@@ -445,16 +536,12 @@ async function fetchNvdForTech(techName) {
   return payload;
 }
 
-async function techHasRelevantCves(techName) {
-  const keyword = normalizeNvdKeyword(techName);
-  const config = NVD_TECH_CONFIG[keyword];
-  const searchTerm = config?.keywordFallback || keyword;
-  const url =
-    `https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=${encodeURIComponent(searchTerm)}` +
-    `&resultsPerPage=10`;
-  const result = await requestNvd(url);
-  if (result.error) return false;
-  return filterRelevantVulnerabilities(keyword, result.vulnerabilities).length > 0;
+async function validateTechWithNvd(techName) {
+  const result = await fetchNvdForTech(techName);
+  return {
+    hasMatches: result.items.length > 0,
+    fetchError: result.fetchError,
+  };
 }
 
 // ENDPOINT 3: GET Data from the NVD api
