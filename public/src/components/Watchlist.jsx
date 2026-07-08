@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { formatTechDisplayName, normalizeTechName } from "../lib/techHelpers";
 
-const QUICK_TECH = ["nodejs", "python", "react"];
+const QUICK_TECH = ["node.js", "python", "react"];
 
 function Watchlist({
   currentUserId,
@@ -23,7 +24,7 @@ function Watchlist({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          tech_name: newTech.trim().toLowerCase(),
+          tech_name: normalizeTechName(newTech),
           user_id: currentUserId,
         }),
       });
@@ -44,7 +45,7 @@ function Watchlist({
   };
 
   const deleteTech = async (techName) => {
-    const displayName = techName.trim();
+    const displayName = formatTechDisplayName(techName);
     if (
       !window.confirm(`Remove "${displayName}" from your watchlist?`)
     ) {
@@ -53,14 +54,14 @@ function Watchlist({
 
     try {
       const response = await fetch(
-        `/api/watchlist?userId=${currentUserId}&tech_name=${displayName.toLowerCase()}`,
+        `/api/watchlist?userId=${currentUserId}&tech_name=${encodeURIComponent(normalizeTechName(techName))}`,
         { method: "DELETE" }
       );
       if (response.ok) {
         setWatchlist(
           watchlist.filter((item) => {
             const currentName = item.tech || item.tech_name;
-            return currentName?.toLowerCase() !== displayName.toLowerCase();
+            return normalizeTechName(currentName) !== normalizeTechName(displayName);
           })
         );
         setError("");
@@ -109,7 +110,7 @@ function Watchlist({
           value={newTech}
           onChange={(change) => setNewTech(change.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="nodejs, python, react"
+          placeholder="node.js, python, react"
           disabled={isLoading}
         />
         <button
@@ -150,12 +151,12 @@ function Watchlist({
         {watchlist.length === 0 && (
           <li className="watchlist-empty">
             <p>No technologies tracked yet.</p>
-            <p className="watchlist-empty-hint">Add nodejs, python, or react above.</p>
+            <p className="watchlist-empty-hint">Add node.js, python, or react above.</p>
           </li>
         )}
         {watchlist.map((item, idx) => {
-          const nameToDisplay = item.tech || item.tech_name;
-          const techKey = nameToDisplay?.toLowerCase();
+          const nameToDisplay = formatTechDisplayName(item.tech || item.tech_name);
+          const techKey = normalizeTechName(nameToDisplay);
           const isActive = activeTech === techKey;
 
           return (

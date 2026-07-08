@@ -53,7 +53,7 @@ app.post("/api/watchlist", async (req, res) => {
         .json({ error: "Technology name cannot be blank!" });
     }
     const userId = req.body.user_id;
-    const cleanTechName = req.body.tech_name.trim().toLowerCase();
+    const cleanTechName = canonicalTechName(req.body.tech_name);
     if (cleanTechName === "") {
       return res
         .status(400)
@@ -77,14 +77,20 @@ app.post("/api/watchlist", async (req, res) => {
     }
 
     // Checks for duplicates
-    const { data: existing } = await supabase
+    const { data: userWatchlist, error: listError } = await supabase
       .from("watchlist")
-      .select("*")
-      .eq("user_id", userId)
-      .eq("tech_name", cleanTechName)
-      .maybeSingle();
+      .select("tech_name")
+      .eq("user_id", userId);
+    if (listError) {
+      console.log(listError);
+      return res.status(400).json({ error: listError.message });
+    }
 
-    if (existing) {
+    if (
+      userWatchlist?.some(
+        (row) => canonicalTechName(row.tech_name) === cleanTechName
+      )
+    ) {
       return res
         .status(400)
         .json({ error: "You are already tracking this technology!" });
@@ -100,7 +106,7 @@ app.post("/api/watchlist", async (req, res) => {
       }
       if (!nvdCheck.hasMatches) {
         return res.status(400).json({
-          error: `"${req.body.tech_name}" has no matching CVEs in NVD. Try a specific product name (e.g. nodejs, python, express).`,
+          error: `"${req.body.tech_name}" has no matching CVEs in NVD. Try a specific product name (e.g. node.js, python, express).`,
         });
       }
     } catch (nvdErr) {
@@ -146,12 +152,23 @@ function normalizeNvdKeyword(techName) {
   const aliases = {
     "node.js": "nodejs",
     node: "nodejs",
+    nodejs: "nodejs",
     "react.js": "react",
-    "reactjs": "react",
+    reactjs: "react",
     "vue.js": "vue",
     "c++": "cpp",
   };
   return aliases[key] || key;
+}
+
+function canonicalTechName(techName) {
+  const key = techName.trim().toLowerCase();
+  const storageNames = {
+    "node.js": "node.js",
+    node: "node.js",
+    nodejs: "node.js",
+  };
+  return storageNames[key] || key;
 }
 
 // Prefer CPE-based NVD queries so watchlist results match the actual product
@@ -595,17 +612,32 @@ app.get("/api/vulnerabilities", async (req, res) => {
 // ENDPOINT 4: Removes a tech from the database nd frontend
 app.delete("/api/watchlist", async (req, res) => {
   const userId = req.query.userId;
-  const cleanTechName = req.query.tech_name.trim().toLowerCase();
+  const cleanTechName = canonicalTechName(req.query.tech_name || "");
 
   if (!userId) {
     return res.status(400).json({ error: "User ID is required" });
   }
   try {
+    const { data: userWatchlist, error: listError } = await supabase
+      .from("watchlist")
+      .select("tech_name")
+      .eq("user_id", userId);
+    if (listError) {
+      return res.status(400).json({ error: listError.message });
+    }
+
+    const match = userWatchlist?.find(
+      (row) => canonicalTechName(row.tech_name) === cleanTechName
+    );
+    if (!match) {
+      return res.status(404).json({ error: "Technology not found in watchlist." });
+    }
+
     const { data, error } = await supabase
       .from("watchlist")
       .delete()
       .eq("user_id", userId)
-      .eq("tech_name", cleanTechName);
+      .eq("tech_name", match.tech_name);
 
     return res.status(200).json({ message: "Sucessfully deleted", data });
   } catch (error) {

@@ -70,7 +70,7 @@ function About({ goBackToLogin, backButtonText = "Back to sign in" }) {
             <h2>Try it</h2>
             <p>
               Create an account, then add{" "}
-              <span className="aboutInlineCode">nodejs</span>,{" "}
+              <span className="aboutInlineCode">node.js</span>,{" "}
               <span className="aboutInlineCode">python</span>, or{" "}
               <span className="aboutInlineCode">react</span> to see live
               advisories.

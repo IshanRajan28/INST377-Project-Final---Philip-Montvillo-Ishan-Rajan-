@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import Watchlist from "../components/Watchlist";
 import WatchlistCarousel from "../components/WatchlistCarousel";
 import { summarizeWatchlist } from "../lib/cveHelpers";
+import { normalizeTechName } from "../lib/techHelpers";
 
 const SEVERITY_BAR_ORDER = ["critical", "high", "medium", "low"];
 
@@ -109,7 +110,7 @@ function Dashboard({ currentUserId, userEmail, onLogout, onShowAbout }) {
     !watchlist.some((item) => item.details?.loading);
 
   const handleSelectTech = useCallback((techName) => {
-    const key = techName.trim().toLowerCase();
+    const key = normalizeTechName(techName);
     setActiveTech(key);
 
     const target = document.getElementById(`tech-row-${key}`);
@@ -133,14 +134,16 @@ function Dashboard({ currentUserId, userEmail, onLogout, onShowAbout }) {
 
     if (
       activeTech &&
-      watchlist.some((item) => (item.tech || item.tech_name)?.toLowerCase() === activeTech)
+      watchlist.some(
+        (item) => normalizeTechName(item.tech || item.tech_name) === activeTech
+      )
     ) {
       return;
     }
 
     const firstTech = watchlist[0]?.tech || watchlist[0]?.tech_name;
     if (firstTech) {
-      setActiveTech(firstTech.toLowerCase());
+      setActiveTech(normalizeTechName(firstTech));
     }
   }, [watchlist, activeTech]);
 

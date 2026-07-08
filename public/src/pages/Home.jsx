@@ -242,7 +242,7 @@ function LoginPage() {
           <div className="loginQuickStart" aria-hidden="true">
             <span className="loginQuickStart-label">Popular stacks</span>
             <div className="loginQuickStart-chips">
-              <span className="loginQuickStart-chip">nodejs</span>
+              <span className="loginQuickStart-chip">node.js</span>
               <span className="loginQuickStart-chip">python</span>
               <span className="loginQuickStart-chip">react</span>
             </div>
@@ -258,7 +258,7 @@ function LoginPage() {
               Node.js HTTP request smuggling via malformed Transfer-Encoding
               headers.
             </p>
-            <span className="login-specimen-tag">nodejs</span>
+            <span className="login-specimen-tag">node.js</span>
           </div>
         </section>
 

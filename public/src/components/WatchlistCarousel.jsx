@@ -1,6 +1,7 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import CveCard from "./CveCard";
+import { formatTechDisplayName, normalizeTechName } from "../lib/techHelpers";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -20,7 +21,7 @@ function WatchlistCarousel({ watchlist, isLoading = false, activeTech }) {
       <div className="empty-state">
         <p>Add a technology to your stack</p>
         <p className="empty-state-hint">
-          Use the sidebar to track something like nodejs, python, or react.
+          Use the sidebar to track something like node.js, python, or react.
         </p>
       </div>
     );
@@ -29,9 +30,10 @@ function WatchlistCarousel({ watchlist, isLoading = false, activeTech }) {
   return (
     <div className="carousel-root">
       {watchlist.map((item, index) => {
-        const displayName = item?.tech || item?.tech_name;
+        const rawName = item?.tech || item?.tech_name;
+        const displayName = formatTechDisplayName(rawName);
         const vulnerabilities = item?.details?.vulnerabilities ?? [];
-        const techKey = displayName?.toLowerCase();
+        const techKey = normalizeTechName(rawName);
         const isActive = activeTech === techKey;
 
         return (
@@ -87,8 +89,8 @@ function WatchlistCarousel({ watchlist, isLoading = false, activeTech }) {
                 {item.details?.fetchError
                   ? `Could not reach NVD for ${displayName}. Wait 30 seconds and refresh, or confirm NVD_API_KEY is set on the server.`
                   : item.details?.noRelevantResults
-                    ? `NVD returned results for "${displayName}", but none matched this product after filtering. Try nodejs, python, or express.`
-                    : `No CVEs found for ${displayName}. Try nodejs, python, react, or express.`}
+                    ? `NVD returned results for "${displayName}", but none matched this product after filtering. Try node.js, python, or express.`
+                    : `No CVEs found for ${displayName}. Try node.js, python, react, or express.`}
                 </p>
               </div>
             ) : (
