@@ -235,6 +235,7 @@ function LoginPage() {
           </ul>
 
           <div className="login-advisory-specimen" aria-hidden="true">
+            <span className="login-specimen-label">Advisory preview</span>
             <div className="login-specimen-meta">
               <span className="login-specimen-id">CVE-2024-21896</span>
               <span className="severityBadge high">HIGH 7.5</span>
@@ -254,74 +255,74 @@ function LoginPage() {
           </header>
 
           <form onSubmit={handleLogin} noValidate>
-          <label htmlFor="login-email">Email</label>
-          <input
-            id="login-email"
-            type="email"
-            autoComplete="email"
-            value={email}
-            onChange={handleEmailChange}
-            disabled={isLoading}
-            required
-          />
+            <label htmlFor="login-email">Email</label>
+            <input
+              id="login-email"
+              type="email"
+              autoComplete="email"
+              value={email}
+              onChange={handleEmailChange}
+              disabled={isLoading}
+              required
+            />
 
-          <label htmlFor="login-password">Password</label>
-          <input
-            id="login-password"
-            type="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={handlePasswordChange}
-            disabled={isLoading}
-            minLength={6}
-            required
-          />
+            <label htmlFor="login-password">Password</label>
+            <input
+              id="login-password"
+              type="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={handlePasswordChange}
+              disabled={isLoading}
+              minLength={6}
+              required
+            />
 
-          {errorMessage && (
-            <p className="banner banner-error" role="alert">
-              {errorMessage}
-            </p>
-          )}
-          {successMessage && (
-            <p className="banner banner-success" role="status">
-              {successMessage}
-            </p>
-          )}
+            {errorMessage && (
+              <p className="banner banner-error" role="alert">
+                {errorMessage}
+              </p>
+            )}
+            {successMessage && (
+              <p className="banner banner-success" role="status">
+                {successMessage}
+              </p>
+            )}
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="login-button"
-            aria-busy={authAction === "signIn"}
-          >
-            {authAction === "signIn" ? "Signing in..." : "Sign in"}
-          </button>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="login-button"
+              aria-busy={authAction === "signIn"}
+            >
+              {authAction === "signIn" ? "Signing in..." : "Sign in"}
+            </button>
 
-          <button
-            type="button"
-            disabled={isLoading}
-            onClick={handleSignUp}
-            className="signup-button"
-            aria-busy={authAction === "signUp"}
-          >
-            {authAction === "signUp" ? "Creating account..." : "Create account"}
-          </button>
-
-          <p className="message-text">
-            New accounts need email confirmation before you can sign in.
-          </p>
-
-          <div className="login-form-footer">
             <button
               type="button"
-              className="textLink-button"
-              onClick={() => setShowAbout(true)}
               disabled={isLoading}
+              onClick={handleSignUp}
+              className="signup-button"
+              aria-busy={authAction === "signUp"}
             >
-              How this works
+              {authAction === "signUp" ? "Creating account..." : "Create account"}
             </button>
-          </div>
-        </form>
+
+            <p className="message-text">
+              New accounts need email confirmation before you can sign in.
+            </p>
+
+            <div className="login-form-footer">
+              <button
+                type="button"
+                className="textLink-button"
+                onClick={() => setShowAbout(true)}
+                disabled={isLoading}
+              >
+                How this works
+              </button>
+            </div>
+          </form>
         </section>
       </div>
     </div>

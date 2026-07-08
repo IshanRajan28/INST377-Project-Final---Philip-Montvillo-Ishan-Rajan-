@@ -1,26 +1,28 @@
 # Vulnerability Tracker
 
-A full-stack web app that helps developers monitor **CVE vulnerabilities** for technologies in their stack. Instead of searching the [NIST NVD](https://nvd.nist.gov/) manually, you build a personal watchlist and browse severity-ranked threats on one dashboard.
+A full-stack web app that helps developers monitor **CVE vulnerabilities** for technologies in their stack. Instead of searching the [NIST NVD](https://nvd.nist.gov/) manually, you build a personal watchlist and browse severity-ranked advisories on one dashboard.
 
 **Live demo:** [https://inst-377-project-final-philip-montv.vercel.app/](https://inst-377-project-final-philip-montv.vercel.app/)
 
 ## Screenshots
 
+> After deploying the latest UI, add `login.png`, `dashboard.png`, and `about.png` to [`docs/screenshots/`](docs/screenshots/). See [docs/screenshots/README.md](docs/screenshots/README.md) for capture specs.
+
 | Login | Dashboard |
 |-------|-----------|
-| ![Login page](docs/screenshots/login.png) | ![Dashboard with CVE cards and CVSS badges](docs/screenshots/dashboard.png) |
+| Split product + auth layout with live CVE preview | Advisory feed with CVSS severity, stats bar, and NVD integration |
 
 | About |
 |-------|
-| ![About page with project overview and tech stack](docs/screenshots/about.png) |
+| Problem → approach → try it flow with tech stack badges |
 
-## Features
+## Highlights
 
-- **Supabase Auth** — email/password login with sessions that persist across refresh
-- **Technology watchlist** — track up to 5 stack items, validated against NVD
-- **CVE dashboard** — per-technology carousel with **CVSS severity** badges (critical → low)
-- **Smarter NVD matching** — CPE-aware queries and relevance filtering to reduce false positives
-- **Responsive UI** — works on desktop, tablet, and mobile
+- **Live NVD integration** — queries NIST CVE API 2.0 with CPE-aware matching
+- **Supabase Auth** — email/password login with persistent sessions
+- **Personal watchlist** — track up to 5 technologies, validated against NVD
+- **Severity-ranked dashboard** — CVSS badges, advisory carousels, highest-risk summary
+- **Polished UI** — loading skeletons, hover states, responsive layout
 - **REST API** — Express backend with Supabase Postgres
 
 ## Tech stack

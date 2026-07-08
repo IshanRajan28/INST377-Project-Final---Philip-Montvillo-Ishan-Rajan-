@@ -135,6 +135,21 @@ function Dashboard({ currentUserId, userEmail, onLogout, onShowAbout }) {
         </div>
       </header>
 
+      <div className="dashboardStatusStrip" role="status">
+        <span className="dashboardStatusItem">
+          <span className="dashboardStatusDot" aria-hidden="true" />
+          Live NVD feed
+        </span>
+        <span className="dashboardStatusSep" aria-hidden="true">
+          ·
+        </span>
+        <span className="dashboardStatusItem">CVSS severity ranking</span>
+        <span className="dashboardStatusSep" aria-hidden="true">
+          ·
+        </span>
+        <span className="dashboardStatusItem">CPE-aware matching</span>
+      </div>
+
       <div className="dashboardColumns">
         <section className="dashboardWatchlist" aria-label="Your stack">
           <div className="panelTitleRow">

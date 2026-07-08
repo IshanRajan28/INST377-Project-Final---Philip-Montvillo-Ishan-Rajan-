@@ -33,29 +33,34 @@ function WatchlistCarousel({ watchlist, isLoading = false }) {
         const vulnerabilities = item?.details?.vulnerabilities ?? [];
 
         return (
-          <div key={item.id || displayName || index} className="techRow">
-            <div className="techRowHeader">
-              <div className="techRowHeader-main">
-                <span className="techRowIndex">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <h3>{displayName}</h3>
-                {item.details?.showingHistorical && (
-                  <span
-                    className="techRowTag techRowTag--historical"
-                    title="No CVEs from the last 2 years for this keyword. Showing older NVD results."
-                  >
-                    Older results
+          <div
+            key={item.id || displayName || index}
+            className="techRow"
+            style={{ "--row-enter-delay": `${index * 0.08}s` }}
+          >
+            <span className="techRowRail" aria-hidden="true">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <div className="techRow-inner">
+              <div className="techRowHeader">
+                <div className="techRowHeader-main">
+                  <h3>{displayName}</h3>
+                  {item.details?.showingHistorical && (
+                    <span
+                      className="techRowTag techRowTag--historical"
+                      title="No CVEs from the last 2 years for this keyword. Showing older NVD results."
+                    >
+                      Older results
+                    </span>
+                  )}
+                </div>
+                {!item.details?.loading && vulnerabilities.length > 0 && (
+                  <span className="techRowMeta">
+                    {vulnerabilities.length} CVE
+                    {vulnerabilities.length === 1 ? "" : "s"}
                   </span>
                 )}
               </div>
-              {!item.details?.loading && vulnerabilities.length > 0 && (
-                <span className="techRowMeta">
-                  {vulnerabilities.length} CVE
-                  {vulnerabilities.length === 1 ? "" : "s"}
-                </span>
-              )}
-            </div>
 
             {item.details?.loading ? (
               <div className="cve-skeleton-row" role="status" aria-live="polite">
@@ -106,6 +111,7 @@ function WatchlistCarousel({ watchlist, isLoading = false }) {
                 })}
               </Swiper>
             )}
+            </div>
           </div>
         );
       })}
