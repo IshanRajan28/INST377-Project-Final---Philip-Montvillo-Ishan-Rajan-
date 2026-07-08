@@ -37,13 +37,22 @@ export function getHighestSeverity(severities) {
 
 export function summarizeWatchlist(watchlist) {
   const severities = [];
+  const severityCounts = {
+    critical: 0,
+    high: 0,
+    medium: 0,
+    low: 0,
+    unknown: 0,
+  };
 
   const advisories = watchlist.reduce((sum, item) => {
     if (item.details?.loading) return sum;
 
     const vulnerabilities = item.details?.vulnerabilities ?? [];
     vulnerabilities.forEach((entry) => {
-      severities.push(getCveSeverity(entry));
+      const severity = getCveSeverity(entry);
+      severities.push(severity);
+      severityCounts[severity] += 1;
     });
 
     return sum + vulnerabilities.length;
@@ -53,5 +62,6 @@ export function summarizeWatchlist(watchlist) {
     technologies: watchlist.length,
     advisories,
     highestSeverity: getHighestSeverity(severities),
+    severityCounts,
   };
 }

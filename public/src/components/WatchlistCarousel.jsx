@@ -11,7 +11,7 @@ const SWIPER_BREAKPOINTS = {
   1024: { slidesPerView: 3, spaceBetween: 20 },
 };
 
-function WatchlistCarousel({ watchlist, isLoading = false }) {
+function WatchlistCarousel({ watchlist, isLoading = false, activeTech }) {
   if (!watchlist || watchlist.length === 0) {
     if (isLoading) {
       return null;
@@ -31,11 +31,14 @@ function WatchlistCarousel({ watchlist, isLoading = false }) {
       {watchlist.map((item, index) => {
         const displayName = item?.tech || item?.tech_name;
         const vulnerabilities = item?.details?.vulnerabilities ?? [];
+        const techKey = displayName?.toLowerCase();
+        const isActive = activeTech === techKey;
 
         return (
           <div
             key={item.id || displayName || index}
-            className="techRow"
+            id={`tech-row-${techKey}`}
+            className={`techRow${isActive ? " techRow--active" : ""}`}
             style={{ "--row-enter-delay": `${index * 0.08}s` }}
           >
             <span className="techRowRail" aria-hidden="true">

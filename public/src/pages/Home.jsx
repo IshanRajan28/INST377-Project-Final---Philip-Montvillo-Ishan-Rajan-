@@ -219,7 +219,12 @@ function LoginPage() {
     <div className="loginPageLayout">
       <div className="loginShell">
         <section className="loginShowcase" aria-labelledby="login-hero-title">
-          <p className="login-eyebrow">Vulnerability Tracker</p>
+          <div className="loginBrandRow">
+            <span className="brandMark brandMark--large" aria-hidden="true">
+              VT
+            </span>
+            <p className="login-eyebrow">Vulnerability Tracker</p>
+          </div>
           <h1 id="login-hero-title" className="login-heroTitle">
             CVE feed for your stack
           </h1>
@@ -233,6 +238,15 @@ function LoginPage() {
             <li>Live NVD data with CVSS severity ranking</li>
             <li>CPE-aware matching to reduce false positives</li>
           </ul>
+
+          <div className="loginQuickStart" aria-hidden="true">
+            <span className="loginQuickStart-label">Popular stacks</span>
+            <div className="loginQuickStart-chips">
+              <span className="loginQuickStart-chip">nodejs</span>
+              <span className="loginQuickStart-chip">python</span>
+              <span className="loginQuickStart-chip">react</span>
+            </div>
+          </div>
 
           <div className="login-advisory-specimen" aria-hidden="true">
             <span className="login-specimen-label">Advisory preview</span>

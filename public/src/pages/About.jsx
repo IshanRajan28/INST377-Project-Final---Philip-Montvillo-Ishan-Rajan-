@@ -10,7 +10,12 @@ function About({ goBackToLogin, backButtonText = "Back to sign in" }) {
     <main className="aboutPage">
       <section className="aboutCard">
         <header className="aboutCard-header">
-          <p className="aboutEyebrow">Vulnerability Tracker</p>
+          <div className="loginBrandRow">
+            <span className="brandMark brandMark--large" aria-hidden="true">
+              VT
+            </span>
+            <p className="aboutEyebrow">Vulnerability Tracker</p>
+          </div>
           <div className="aboutTitleRow">
             <h1>How this works</h1>
             <span className="sourceBadge">NIST NVD</span>

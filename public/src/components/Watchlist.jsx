@@ -1,10 +1,14 @@
 import { useState } from "react";
 
+const QUICK_TECH = ["nodejs", "python", "react"];
+
 function Watchlist({
   currentUserId,
   watchlist,
   setWatchlist,
   refreshWatchlist,
+  activeTech,
+  onSelectTech,
 }) {
   const [newTech, setNewTech] = useState("");
   const [error, setError] = useState("");
@@ -84,6 +88,13 @@ function Watchlist({
     return item?.details?.vulnerabilities?.length ?? 0;
   };
 
+  const handleItemKeyDown = (event, techName) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      onSelectTech?.(techName);
+    }
+  };
+
   return (
     <div className="watchlist-panel">
       <div className="watchlist-add-panel">
@@ -116,15 +127,46 @@ function Watchlist({
           {error}
         </p>
       )}
+
+      <div className="watchlist-quickAdd">
+        {QUICK_TECH.map((tech) => (
+          <button
+            key={tech}
+            type="button"
+            className="watchlist-quickChip"
+            onClick={() => {
+              setNewTech(tech);
+              setError("");
+            }}
+            disabled={isLoading}
+          >
+            {tech}
+          </button>
+        ))}
+      </div>
       </div>
 
       <ul className="watchlist-items">
+        {watchlist.length === 0 && (
+          <li className="watchlist-empty">
+            <p>No technologies tracked yet.</p>
+            <p className="watchlist-empty-hint">Add nodejs, python, or react above.</p>
+          </li>
+        )}
         {watchlist.map((item, idx) => {
           const nameToDisplay = item.tech || item.tech_name;
+          const techKey = nameToDisplay?.toLowerCase();
+          const isActive = activeTech === techKey;
+
           return (
             <li
               key={item.id || nameToDisplay || idx}
-              className="watchlist-item"
+              className={`watchlist-item${isActive ? " watchlist-item--active" : ""}`}
+              onClick={() => onSelectTech?.(nameToDisplay)}
+              onKeyDown={(event) => handleItemKeyDown(event, nameToDisplay)}
+              role="button"
+              tabIndex={0}
+              aria-current={isActive ? "true" : undefined}
             >
               <div className="watchlist-item-label">
                 <span className="watchlist-item-name">{nameToDisplay}</span>
@@ -147,7 +189,10 @@ function Watchlist({
               <button
                 type="button"
                 className="removeTechButton"
-                onClick={() => deleteTech(nameToDisplay)}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  deleteTech(nameToDisplay);
+                }}
                 aria-label={`Remove ${nameToDisplay} from watchlist`}
               >
                 <span aria-hidden="true">×</span>

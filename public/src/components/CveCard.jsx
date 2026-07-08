@@ -65,6 +65,19 @@ function CveCard({ cve }) {
 
       <p className="cveDescription">{description}</p>
 
+      {score != null && score > 0 && (
+        <div
+          className="cveScoreMeter"
+          role="presentation"
+          aria-hidden="true"
+        >
+          <span
+            className={`cveScoreMeter-fill ${severity}`}
+            style={{ width: `${Math.min(score, 10) * 10}%` }}
+          />
+        </div>
+      )}
+
       <footer className="cveCardFooter">
         <small className="cvePublished">Published · {publishedDate}</small>
         {nvdUrl && (
