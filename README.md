@@ -4,18 +4,6 @@ A full-stack web app that helps developers monitor **CVE vulnerabilities** for t
 
 **Live demo:** [https://inst-377-project-final-philip-montv.vercel.app/](https://inst-377-project-final-philip-montv.vercel.app/)
 
-## Screenshots
-
-> After deploying the latest UI, add `login.png`, `dashboard.png`, and `about.png` to [`docs/screenshots/`](docs/screenshots/). See [docs/screenshots/README.md](docs/screenshots/README.md) for capture specs.
-
-| Login | Dashboard |
-|-------|-----------|
-| Split product + auth layout with live CVE preview | Advisory feed with CVSS severity, stats bar, and NVD integration |
-
-| About |
-|-------|
-| Problem → approach → try it flow with tech stack badges |
-
 ## Highlights
 
 - **Live NVD integration** — queries NIST CVE API 2.0 with CPE-aware matching
